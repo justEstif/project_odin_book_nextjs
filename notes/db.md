@@ -1,34 +1,25 @@
 # Database
 
-- the purpose of your database
+- The database keeps user information, posts, comments and likes made on the Facebook clone app.
 
-  - The database keeps user information, posts, comments and likes made on the Facebook clone app.
+- what is stored in the db?
 
-- gather and organize
-  - what is store in the db?
-    - user info, posts, comments, likes
-    - what do users have?
-      - friends
-      - posts
-      - profile
-    - what can users do?
-      - comment
-      - post
-      - like
-  - what do you need to register?
-    - name, email, accessToken
-  - what do you need to sign in?
-    - email, accessToken
-  - what do you need to create a post?
-    - user ,content
-  - what do you need to create a comment?
-    - user, content
-  - what do you need to like?
-    - user, content
-  - what is a post?
-  - what is a comment?
-  - what is a user?
-  - what is a friend?
+  - users
+  - posts,
+  - comments,
+  - like
+
+- what do users have?
+
+  - friends,
+  - posts,
+  - profile
+
+- what can a user do?
+
+  - post,
+  - comment,
+  - like,
 
 1. Determine the purpose of the db
 
@@ -40,77 +31,72 @@
 
 2. Find and organize the information required
 
-```typescript
-type Profile = {
-  id: string;
-  user: string; // User id
-  bio: string;
-  pic?: string; // user profile pic url, TODO
-};
-
-type User = {
-  id: string;
-  email: string;
-  accessToken: string; // either password or access token
-  friends: User[]; // array of friends
-  pendingRequest: User[]; // TODO fix
-};
-
-type Post = {
-  id: string;
-  user: string; // User id
-  content: string; //
-  date: Date;
-};
-
-type Like = {
-  id: string;
-  post: string; // Post id
-  user: string; // User id
-  date: Date;
-};
-```
-
-- to store
-- users,
-  - profile Profile
-  -
-- posts,
-
 - how to register?
-  - either email and password or facebook
+  - either email and password or facebook -> store access token as password
+- what type of api calls will you make?
+  - register user
+  - sign in user
+  - create profile
+  - get all users
+  - send friend request
+  - accept friend request
+  - get friends post in chronological order
+    - only friends (not pending)
+    - // idea becomes friends page
+  - comment on user post
+  - like user post
+  - make a user post
 
 1. user logins in to fb
-2. apps get access token
-3. if new access token, get data from fb, and store data as new user
+1. apps get access token
+1. if new access token, get data from fb, and store data as new user
    else: login to user with that id
 
 ## Models
 
-- two people are friends if your id exists in their friends list and both exist
-- models
+```typescript
+// used while active
+type Profile = {
+  id: string;
+  user: User; // User id
+  firstName: string;
+  lastName: string;
+  bio: string;
+  pic?: string; // user profile pic url, TODO
+};
 
-  - user
-    - friends
-    - posts
-      - comments
-      - likes
-  - post
+// used for login
+type User = {
+  id: string;
+  email: string;
+  password: string; // either password or access token
+};
 
-    - comment
-    - like
+type Friends = {
+  id: string;
+  user: User;
+  friends: User[]; // array of user id
+  pendingFriends: User[]; // array of user id
+};
 
-      - post
-      - user
+type Post = {
+  id: string;
+  user: User; // User id
+  content: string; // maybe this can be a url
+  date: Date;
+};
 
-    - comment
-      - post
-      - user
-      - time
-      - id
-      - text
+type Comment = {
+  id: string;
+  post: Post; // Post id
+  user: User; // User id
+  date: Date;
+  content: string;
+};
 
-- relationship between models
-
-
-
+type Like = {
+  id: string;
+  post: Post; // Post id
+  user: string; // User id
+};
+```

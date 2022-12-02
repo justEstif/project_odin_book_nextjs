@@ -38,6 +38,10 @@
 - Think about the questions you might want the database to answer.
 
 3. Divide the information into major subjects, which will become tables
+
+- try to record each fact just once
+- if you find yourself repeating the same information, place that information into a separate table
+
 4. Add the fields for each table
 5. Specify primary keys(id)
 6. Decide how the data in one table is related to the data in other tables.
