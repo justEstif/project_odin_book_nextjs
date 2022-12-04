@@ -7,10 +7,15 @@
 - [Pusher with Vercel](https://vercel.com/guides/deploying-pusher-channels-with-vercel)
 - [Database design basics](#database-design-basics)
 - [Zod with next](https://giancarlobuomprisco.com/next/protect-next-api-zod)
+- [RESTful web API design](#api-design)
+- [NextAuth Tutorial](https://themodern.dev/courses/build-a-fullstack-app-with-nextjs-supabase-and-prisma-322389284337222224)
+
+- TODO:
+  - Infinite scrolling
 
 ## Database design basics
 
-- Source: <https://support.microsoft.com/en-us/office/database-design-basics-eb2159cf-1e30-401a-8084-bd4f9c9ca1f5>
+- [Source](https://support.microsoft.com/en-us/office/database-design-basics-eb2159cf-1e30-401a-8084-bd4f9c9ca1f5)
 
 - Avoid duplicate/redundant data
 - Completeness and correctness is important
@@ -47,3 +52,26 @@
 6. Decide how the data in one table is related to the data in other tables.
 7. Refine your design by analyzing a sample
 8. Apply the normalization rules
+
+## API Design
+
+- [Source](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design)
+
+- The web API should be able to evolve and add functionality independently from client applications.
+
+- REST APIs are designed around resources, which are any kind of object, data, or service that can be accessed by the client.
+
+- HTTP protocol
+
+  - GET: retrieves resource
+  - POST: create
+  - PUT: create or update
+  - PATCH: partial update
+  - DELETE: remove
+
+- Avoid creating APIs that simply mirror the internal structure of a database.
+- The purpose of REST is to model entities and the operations that an application can perform on those entities.
+- A client should not be exposed to the internal implementation.
+- think of the web API as an abstraction of the database.
+- If necessary, introduce a mapping layer between the database and the web API.
+- That way, client applications are isolated from changes to the underlying database scheme.

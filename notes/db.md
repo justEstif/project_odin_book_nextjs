@@ -47,11 +47,6 @@
   - like user post
   - make a user post
 
-1. user logins in to fb
-1. apps get access token
-1. if new access token, get data from fb, and store data as new user
-   else: login to user with that id
-
 ## Models
 
 ```typescript
