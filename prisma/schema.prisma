@@ -79,7 +79,7 @@ model Comment {
   // likes
   likedBy User[] @relation("UserLikesComment")
 
-  // Comment to comment
+  // Comment to comment relation
   parentComment   Comment?  @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   parentCommentId String?
   childComments   Comment[] @relation("CommentParentsComment")
