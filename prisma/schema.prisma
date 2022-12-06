@@ -27,8 +27,7 @@ model User {
   profile Profile? @relation("UserHasProfile")
 
   // auth
-  email    String @unique
-  password String
+  email String @unique
 
   // posts
   posts      Post[] @relation("UserAuthorsPost")
