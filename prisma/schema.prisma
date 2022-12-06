@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String  @id @default(uuid())
+  firstName String
+  lastName  String
+  bio       String
+  pic       String?
+
+  // user
+  user   User   @relation("UserHasProfile", fields: [userId], references: [id])
+  userId String @unique
+}
+
+model User {
+  id      String   @id @default(uuid())
+  profile Profile? @relation("UserHasProfile")
+
+  // auth
+  email    String @unique
+  password String
+
+  // posts
+  posts      Post[] @relation("UserAuthorsPost")
+  likedPosts Post[] @relation("UserLikesPost")
+
+  // comments
+  comments      Comment[] @relation("UserAuthorsComment")
+  likedComments Comment[] @relation("UserLikesComment")
+
+  // sent friend requests
+  requests         User[] @relation("friendRequests")
+  requestsRelation User[] @relation("friendRequests")
+
+  // accepted friend requests
+  friends         User[] @relation("friends")
+  friendsRelation User[] @relation("friends")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  content   String
+
+  // author
+  author   User   @relation("UserAuthorsPost", fields: [authorId], references: [id])
+  authorId String
+
+  // likes
+  likedBy User[] @relation("UserLikesPost")
+
+  // comments
+  comments Comment[] @relation("PostHasComment")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  // post
+  post   Post   @relation("PostHasComment", fields: [postId], references: [id])
+  postId String
+
+  // user
+  author   User   @relation("UserAuthorsComment", fields: [authorId], references: [id])
+  authorId String
+
+  // likes
+  likedBy User[] @relation("UserLikesComment")
+
+  // Comment to comment
+  parentComment   Comment?  @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
+  parentCommentId String?
+  childComments   Comment[] @relation("CommentParentsComment")
+}

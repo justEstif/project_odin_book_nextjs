@@ -34,6 +34,7 @@
 - how to register?
   - either email and password or facebook -> store access token as password
 - what type of api calls will you make?
+
   - register user
   - sign in user
   - create profile
@@ -47,10 +48,24 @@
   - like user post
   - make a user post
 
+- User A
+  - user a sends friend request to user b
+- User B
+
 ## Models
 
 ```typescript
 // used while active
+
+// used for login
+type User = {
+  id: string;
+  email: string;
+  password: string; // either password or access token
+  profile: Profile;
+  friends: Friends;
+};
+
 type Profile = {
   id: string;
   user: User; // User id
@@ -58,13 +73,6 @@ type Profile = {
   lastName: string;
   bio: string;
   pic?: string; // user profile pic url, TODO
-};
-
-// used for login
-type User = {
-  id: string;
-  email: string;
-  password: string; // either password or access token
 };
 
 type Friends = {
