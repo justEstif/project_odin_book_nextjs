@@ -8,12 +8,19 @@ datasource db {
 }
 
 model User {
-  id      String   @id @default(cuid())
-  profile Profile? @relation("UserProfile")
+  id String @id @default(cuid())
 
   // auth
-  email String @unique
+  email         String    @unique
   emailVerified DateTime?
+
+  // Profile
+  name  String?
+  image String?
+  bio   String?
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
 
   // posts
   posts      Post[] @relation("UserAuthorsPost")
@@ -24,12 +31,12 @@ model User {
   likedComments Comment[] @relation("UserLikesComment")
 
   // sent friend requests
-  requests         User[] @relation("friendRequests")
-  requestsRelation User[] @relation("friendRequests")
+  requests         User[] @relation("UserSentFriendRequests")
+  requestsRelation User[] @relation("UserSentFriendRequests")
 
   // accepted friend requests
-  friends         User[] @relation("friends")
-  friendsRelation User[] @relation("friends")
+  friends         User[] @relation("UserFriends")
+  friendsRelation User[] @relation("UserFriends")
 
   // User Account: a user can have multiple accounts
   Account Account[] @relation("UserAccounts")
@@ -38,25 +45,13 @@ model User {
   Session Session[] @relation("UserSessions")
 }
 
-model Profile {
-  id        String  @id @default(cuid())
-  firstName String
-  lastName  String
-  bio       String
-  pic       String?
-
-  // user
-  user   User   @relation("UserProfile", fields: [userId], references: [id])
-  userId String @unique
-}
-
 model Post {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   content   String
 
   // author
-  author   User   @relation("UserAuthorsPost", fields: [authorId], references: [id])
+  author   User   @relation("UserAuthorsPost", fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
   // likes
@@ -72,11 +67,11 @@ model Comment {
   createdAt DateTime @default(now())
 
   // post
-  post   Post   @relation("PostHasComment", fields: [postId], references: [id])
+  post   Post   @relation("PostHasComment", fields: [postId], references: [id], onDelete: Cascade)
   postId String
 
   // user
-  author   User   @relation("UserAuthorsComment", fields: [authorId], references: [id])
+  author   User   @relation("UserAuthorsComment", fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
   // likes
@@ -90,21 +85,22 @@ model Comment {
 
 // Information about OAuth accounts associated with a user
 model Account {
-  id                String  @id @default(cuid())
-  type              String
+  id   String @id @default(cuid())
+  type String
+
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
 
-  // dates
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @default(now()) @map(name: "updated_at")
+  refresh_token String? @db.Text
+  access_token  String? @db.Text
+
+  expires_at Int?
+  token_type String?
+
+  scope    String?
+  id_token String? @db.Text
+
+  session_state String?
 
   // Each account can only have one user
   user   User   @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
