@@ -13,6 +13,7 @@ model User {
 
   // auth
   email String @unique
+  emailVerified DateTime?
 
   // posts
   posts      Post[] @relation("UserAuthorsPost")
@@ -81,7 +82,7 @@ model Comment {
   // likes
   likedBy User[] @relation("UserLikesComment")
 
-  // Comment to comment relation
+  // comment to comment relation
   parentComment   Comment?  @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   parentCommentId String?
   childComments   Comment[] @relation("CommentParentsComment")

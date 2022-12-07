@@ -1,5 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import FBProvider from "next-auth/providers/facebook";
+import FacebookProvider from "next-auth/providers/facebook";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import env from "lib/env";
@@ -7,12 +7,14 @@ import prisma from "lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
   providers: [
-    FBProvider({
+    FacebookProvider({
       clientId: env.FACEBOOK_ID,
       clientSecret: env.FACEBOOK_SECRET,
     }),
-    // email provider
     EmailProvider({
       server: {
         host: env.EMAIL_SERVER_HOST,
@@ -22,7 +24,7 @@ export const authOptions: NextAuthOptions = {
           pass: env.EMAIL_SERVER_PASSWORD,
         },
       },
-      from: process.env.EMAIL_FROM,
+      from: env.EMAIL_FROM,
     }),
   ],
 };
