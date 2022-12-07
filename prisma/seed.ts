@@ -5,7 +5,6 @@ import prisma from "lib/prisma";
 const user = (): Prisma.UserCreateInput => ({
   id: faker.datatype.uuid(),
   email: faker.internet.email(),
-  password: faker.internet.password(),
 
   profile: {
     create: {
@@ -21,7 +20,6 @@ const user = (): Prisma.UserCreateInput => ({
 const userWithProfile = (): Prisma.UserCreateInput => ({
   id: faker.datatype.uuid(),
   email: faker.internet.email(),
-  password: faker.internet.password(),
 
   profile: {
     create: {
@@ -37,7 +35,6 @@ const userWithProfile = (): Prisma.UserCreateInput => ({
 const userWithPost = (): Prisma.UserCreateInput => ({
   id: faker.datatype.uuid(),
   email: faker.internet.email(),
-  password: faker.internet.password(),
 
   profile: {
     create: {
@@ -61,7 +58,6 @@ const userWithPost = (): Prisma.UserCreateInput => ({
 const userWithPosts = (): Prisma.UserCreateInput => ({
   id: faker.datatype.uuid(),
   email: faker.internet.email(),
-  password: faker.internet.password(),
 
   profile: {
     create: {
