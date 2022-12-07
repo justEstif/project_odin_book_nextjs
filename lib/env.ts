@@ -1,9 +1,12 @@
 import { object, string } from "zod";
 
 const envSchema = object({
-  // facebook provider
-  FACEBOOK_ID: string(),
-  FACEBOOK_SECRET: string(),
+  // DB
+  DATABASE_URL: string(),
+
+  // jwt
+  NEXTAUTH_URL: string(),
+  NEXTAUTH_SECRET: string(),
 
   // email provider
   EMAIL_SERVER_USER: string(),
@@ -11,6 +14,10 @@ const envSchema = object({
   EMAIL_SERVER_HOST: string(),
   EMAIL_SERVER_PORT: string(),
   EMAIL_FROM: string(),
+
+  // facebook provider
+  FACEBOOK_ID: string(),
+  FACEBOOK_SECRET: string(),
 });
 
 const env = envSchema.safeParse(process.env);
