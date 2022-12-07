@@ -7,21 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
-  id        String  @id @default(uuid())
-  firstName String
-  lastName  String
-  bio       String
-  pic       String?
-
-  // user
-  user   User   @relation("UserHasProfile", fields: [userId], references: [id])
-  userId String @unique
-}
-
 model User {
-  id      String   @id @default(uuid())
-  profile Profile? @relation("UserHasProfile")
+  id      String   @id @default(cuid())
+  profile Profile? @relation("UserProfile")
 
   // auth
   email String @unique
@@ -41,10 +29,28 @@ model User {
   // accepted friend requests
   friends         User[] @relation("friends")
   friendsRelation User[] @relation("friends")
+
+  // User Account: a user can have multiple accounts
+  Account Account[] @relation("UserAccounts")
+
+  // User session:
+  Session Session[] @relation("UserSessions")
+}
+
+model Profile {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  bio       String
+  pic       String?
+
+  // user
+  user   User   @relation("UserProfile", fields: [userId], references: [id])
+  userId String @unique
 }
 
 model Post {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   content   String
 
@@ -60,7 +66,7 @@ model Post {
 }
 
 model Comment {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   content   String
   createdAt DateTime @default(now())
 
@@ -79,4 +85,49 @@ model Comment {
   parentComment   Comment?  @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   parentCommentId String?
   childComments   Comment[] @relation("CommentParentsComment")
+}
+
+// Information about OAuth accounts associated with a user
+model Account {
+  id                String  @id @default(cuid())
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  // dates
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  // Each account can only have one user
+  user   User   @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@unique([provider, providerAccountId])
+}
+
+// Used for database sessions
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  expires      DateTime
+
+  // user
+  user   User   @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+// store tokens for passwordless sign in
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
