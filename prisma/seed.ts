@@ -1,7 +1,6 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { faker } from "@faker-js/faker";
-
-const prisma = new PrismaClient();
+import prisma from "lib/prisma";
 
 const user = (): Prisma.UserCreateInput => ({
   id: faker.datatype.uuid(),
