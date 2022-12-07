@@ -1,7 +1,7 @@
 import { object, string } from "zod";
 
 const envSchema = object({
-  // DB
+  // db
   DATABASE_URL: string(),
 
   // jwt
