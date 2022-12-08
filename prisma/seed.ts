@@ -1,6 +1,7 @@
-import { Prisma } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { faker } from "@faker-js/faker";
-import prisma from "lib/prisma";
+
+const prisma = new PrismaClient();
 
 const user = (): Prisma.UserCreateInput => ({
   id: faker.datatype.uuid(),
@@ -12,7 +13,7 @@ const user = (): Prisma.UserCreateInput => ({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       bio: faker.company.catchPhrase(),
-      pic: faker.image.image(),
+      image: faker.image.image(),
     },
   },
 });
@@ -27,7 +28,7 @@ const userWithProfile = (): Prisma.UserCreateInput => ({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       bio: faker.company.catchPhrase(),
-      pic: faker.image.image(),
+      image: faker.image.image(),
     },
   },
 });
@@ -42,7 +43,7 @@ const userWithPost = (): Prisma.UserCreateInput => ({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       bio: faker.company.catchPhrase(),
-      pic: faker.image.image(),
+      image: faker.image.image(),
     },
   },
   posts: {
@@ -65,7 +66,7 @@ const userWithPosts = (): Prisma.UserCreateInput => ({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       bio: faker.company.catchPhrase(),
-      pic: faker.image.image(),
+      image: faker.image.image(),
     },
   },
   posts: {

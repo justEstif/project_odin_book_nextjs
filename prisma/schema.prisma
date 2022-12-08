@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Profile {
+  id        String  @id @default(cuid())
+  firstName String?
+  lastName  String?
+  image     String?
+  bio       String?
+
+  // user
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -14,10 +26,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
 
-  // Profile
-  name  String?
-  image String?
-  bio   String?
+  profile Profile?
 
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @default(now()) @map(name: "updated_at")
