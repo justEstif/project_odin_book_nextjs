@@ -8,83 +8,99 @@ datasource db {
 }
 
 model Profile {
-  id    String  @id @default(cuid())
-  name  String?
-  image String?
-  bio   String?
-
-  // user
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
+  id    String @id @default(cuid())
+  name  String @default("")
+  image String @default("")
+  bio   String @default("")
+  user  User?
 }
 
 model User {
   id String @id @default(cuid())
 
+  // mandatory user profile
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @unique
+
   // auth
   email         String    @unique
   emailVerified DateTime?
 
-  profile Profile?
-
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @default(now()) @map(name: "updated_at")
+  // date
+  createdAt DateTime @default(now())
 
   // posts
-  posts      Post[] @relation("UserAuthorsPost")
-  likedPosts Post[] @relation("UserLikesPost")
+  posts      Post[] @relation("Posts")
+  likedPosts Post[] @relation("LikedPosts")
 
   // comments
-  comments      Comment[] @relation("UserAuthorsComment")
-  likedComments Comment[] @relation("UserLikesComment")
+  comments      Comment[] @relation("Comments")
+  likedComments Comment[] @relation("LikedComments")
 
-  // sent friend requests
-  requests         User[] @relation("UserSentFriendRequests")
-  requestsRelation User[] @relation("UserSentFriendRequests")
-
-  // accepted friend requests
-  friends         User[] @relation("UserFriends")
-  friendsRelation User[] @relation("UserFriends")
+  // friends
+  sentRequests     Friends[] @relation("SentRequests")
+  receivedRequests Friends[] @relation("ReceivedRequests")
+  acceptedRequests Friends[] @relation("AcceptedRequests")
 
   // User Account: a user can have multiple accounts
-  Account Account[] @relation("UserAccounts")
+  Accounts Account[] @relation("Accounts")
+}
+
+model Friends {
+  sentRequests     User   @relation("SentRequests", fields: [requestedId], references: [id])
+  requestedId      String
+  receivedRequests User   @relation("ReceivedRequests", fields: [receivedId], references: [id])
+  receivedId       String
+  friends          User   @relation("AcceptedRequests", fields: [acceptedId], references: [id])
+  acceptedId       String
+
+  @@id([requestedId, receivedId, acceptedId])
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  content   String
+  id String @id @default(cuid())
 
-  // author
-  author   User   @relation("UserAuthorsPost", fields: [authorId], references: [id], onDelete: Cascade)
-  authorId String
+  // date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // post content
+  content String
+  // TODO: content type
+
+  // user
+  user   User   @relation("Posts", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   // likes
-  likedBy User[] @relation("UserLikesPost")
+  likes User[] @relation("LikedPosts")
 
   // comments
-  comments Comment[] @relation("PostHasComment")
+  comments Comment[] @relation("Comments")
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  content   String
+  id      String @id @default(cuid())
+  content String
+
+  // date
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // post
-  post   Post   @relation("PostHasComment", fields: [postId], references: [id], onDelete: Cascade)
-  postId String
+  post   Post   @relation("Comments", fields: [postId], references: [id], onDelete: Cascade)
+  postId String @unique
 
   // user
-  author   User   @relation("UserAuthorsComment", fields: [authorId], references: [id], onDelete: Cascade)
-  authorId String
+  user   User   @relation("Comments", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   // likes
-  likedBy User[] @relation("UserLikesComment")
+  likes User[] @relation("LikedComments")
 
   // comment to comment relation
   parentComment   Comment?  @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
-  parentCommentId String?
+  parentCommentId String?   @unique
   childComments   Comment[] @relation("CommentParentsComment")
 }
 
@@ -107,8 +123,7 @@ model Account {
 
   session_state String?
 
-  // Each account can only have one user
-  user   User   @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation("Accounts", fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   @@unique([provider, providerAccountId])

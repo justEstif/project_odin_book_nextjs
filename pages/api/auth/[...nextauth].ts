@@ -28,9 +28,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ token, session }) {
+    session: async ({ session, token, user }) => {
       if (token) {
         session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.image = token.image || "";
+        session.user.name = token.name || "";
+      } else {
+        session.user.id = user.id;
+        session.user.email = user.email;
       }
       return session;
     },
@@ -40,23 +46,25 @@ export const authOptions: NextAuthOptions = {
         where: {
           id: token.id,
         },
+        include: {
+          profile: true,
+        },
       });
 
       if (!dbUser && user) {
-        return {
-          id: user.id,
-        };
+        token.id = user.id;
+        token.email = user.email;
+        return token;
       }
 
       if (dbUser) {
-        return {
-          id: dbUser.id,
-        };
+        token.id = dbUser.id;
+        token.email = dbUser.email;
+        token.image = dbUser.profile.image;
+        token.name = dbUser.profile.name;
       }
 
-      return {
-        id: "",
-      };
+      return token;
     },
   },
 };
