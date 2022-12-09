@@ -47,7 +47,30 @@
 ### Getting Started
 
 - Think about the data architecture required to make this work
-  - models and the relationship between them
-  - how to model a user's list of friends and friend requests?
-  - posts should be able to have likes and comments associated with them, how are you going to mode that?
+- [x] models and the relationship between them
+  - [x] how to model a user's list of friends and friend requests?
+    - [description](#how-friends-were-modeled)
+  - [x] posts should be able to have likes and comments associated with them, how are you going to mode that?
+    - [description](#how-posts-were-modeled)
 - you can populate data like users and posts with fake data using faker module
+
+#### How friends were modeled?
+
+- when user-a sends a friend request to user-b
+  - add user-b's id to user-a's sentRequests
+  - add user-a's id to user'b's receivedRequests
+- if accepted:
+  - add user-b's id to user-a's friends
+  - add user-a's id to user-b's friends
+  - add requesters id to receivedRequests
+
+#### How posts were modeled?
+
+- one to many relation
+
+- one post can have many comments, but comments can only have one post
+  - in comment: have a post id
+  - in posts: have a comments array
+- one post can have many likes, but likes can only have one post
+  - in posts: have a likes array, with user id of user who liked
+  - in `likedPosts`: array of posts liked
