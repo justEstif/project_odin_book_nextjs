@@ -10,8 +10,7 @@ const user = (): Prisma.UserCreateInput => ({
   profile: {
     create: {
       id: faker.datatype.uuid(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
+      name: faker.name.fullName(),
       bio: faker.company.catchPhrase(),
       image: faker.image.image(),
     },
@@ -25,8 +24,7 @@ const userWithProfile = (): Prisma.UserCreateInput => ({
   profile: {
     create: {
       id: faker.datatype.uuid(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
+      name: faker.name.fullName(),
       bio: faker.company.catchPhrase(),
       image: faker.image.image(),
     },
@@ -40,8 +38,7 @@ const userWithPost = (): Prisma.UserCreateInput => ({
   profile: {
     create: {
       id: faker.datatype.uuid(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
+      name: faker.name.fullName(),
       bio: faker.company.catchPhrase(),
       image: faker.image.image(),
     },
@@ -63,8 +60,7 @@ const userWithPosts = (): Prisma.UserCreateInput => ({
   profile: {
     create: {
       id: faker.datatype.uuid(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
+      name: faker.name.fullName(),
       bio: faker.company.catchPhrase(),
       image: faker.image.image(),
     },

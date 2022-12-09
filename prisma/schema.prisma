@@ -48,9 +48,6 @@ model User {
 
   // User Account: a user can have multiple accounts
   Account Account[] @relation("UserAccounts")
-
-  // User session:
-  Session Session[] @relation("UserSessions")
 }
 
 model Post {
@@ -115,17 +112,6 @@ model Account {
   userId String
 
   @@unique([provider, providerAccountId])
-}
-
-// Used for database sessions
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  expires      DateTime
-
-  // user
-  user   User   @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
-  userId String
 }
 
 // store tokens for passwordless sign in
