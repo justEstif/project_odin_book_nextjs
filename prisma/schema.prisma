@@ -8,11 +8,10 @@ datasource db {
 }
 
 model Profile {
-  id        String  @id @default(cuid())
-  firstName String?
-  lastName  String?
-  image     String?
-  bio       String?
+  id    String  @id @default(cuid())
+  name  String?
+  image String?
+  bio   String?
 
   // user
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

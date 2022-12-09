@@ -10,8 +10,7 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => {
           emailVerified: data.emailVerified,
           profile: {
             create: {
-              firstName: data.name || "",
-              lastName: data.name || "",
+              name: data.name || "",
               bio: "",
               image: data.image || "",
             },
@@ -68,8 +67,6 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => {
         if (verificationToken.id) delete verificationToken.id;
         return verificationToken;
       } catch (error) {
-        // If token already used/deleted, just return null
-        // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
         if ((error as Prisma.PrismaClientKnownRequestError).code === "P2025")
           return null;
         throw error;
