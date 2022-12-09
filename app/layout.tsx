@@ -1,17 +1,14 @@
-import "./globals.css";
-import SessionProvider from "./(components)/sessionProvider";
-
-export default function RootLayout({
-  children,
-}: {
+interface IRootLayout {
   children: React.ReactNode;
-}) {
+}
+
+const RootLayout = ({ children }: IRootLayout) => {
   return (
     <html lang="en">
-      <head /> {/* nearest head el*/}
-      <body>
-        <SessionProvider>{children}</SessionProvider>
-      </body>
+      <head />
+      <body>{children}</body>
     </html>
   );
-}
+};
+
+export default RootLayout;
