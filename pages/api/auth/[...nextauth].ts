@@ -27,23 +27,6 @@ export const authOptions: NextAuthOptions = {
       from: env.EMAIL_FROM,
     }),
   ],
-  events: {
-    signIn: async ({ user: { email } }) => {
-      console.log(`Sign in user:${email} `);
-    },
-    signOut: async ({ session: { user } }) => {
-      console.log(`Sign out user: ${user?.email}`);
-    },
-    createUser: async ({ user: { email } }) => {
-      console.log(`Created user: ${email}`);
-    },
-    session: async ({ token, session }) => {
-      console.log({
-        token,
-        session,
-      });
-    },
-  },
 };
 
 export default NextAuth(authOptions);
