@@ -7,6 +7,10 @@ import PrismaAdapter from "@/lib/adapters/prisma";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  pages: {
+    newUser: "/profile",
+    signOut: "/auth/sign-out",
+  },
   session: {
     strategy: "jwt",
   },
@@ -34,6 +38,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.image || "";
         session.user.name = token.name || "";
+        session.user.isNewUser = token.isNewUser;
       } else {
         session.user.id = user.id;
         session.user.email = user.email;
@@ -41,7 +46,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, isNewUser }) {
       const dbUser = await prisma.user.findUnique({
         where: {
           id: token.id || "",
@@ -54,6 +59,7 @@ export const authOptions: NextAuthOptions = {
       if (!dbUser && user) {
         token.id = user.id;
         token.email = user.email;
+        token.isNewUser = !!isNewUser;
         return token;
       }
 
@@ -62,6 +68,7 @@ export const authOptions: NextAuthOptions = {
         token.email = dbUser.email;
         token.image = dbUser.profile.image;
         token.name = dbUser.profile.name;
+        token.isNewUser = !!isNewUser;
       }
 
       return token;
