@@ -1,20 +1,17 @@
-import { getCurrentUser } from "@/lib/session";
-import { redirect } from "next/navigation";
+"use client";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
-const Page = async ({}: Props) => {
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect("/sign-in");
-  } else {
-    return (
-      <div>
-        <div>Home Page</div>
-        <div>{user.name}</div>
-      </div>
-    );
-  }
+const Page = ({}: Props) => {
+  const { data: session } = useSession();
+  const user = session?.user;
+  return (
+    <div>
+      <div>Home Page</div>
+      <div>{user?.name}</div>
+    </div>
+  );
 };
 
 export default Page;
