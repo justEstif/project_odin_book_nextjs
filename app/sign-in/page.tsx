@@ -1,12 +1,15 @@
 "use client";
 import { signIn } from "next-auth/react";
 
-export default function Page() {
+type Props = {};
+
+const Page = ({}: Props) => {
   const signInEmail = async () => {
     await signIn("email", {
       email: "bedif14283@ceoshub.com",
     });
   };
+
   return (
     <div>
       <div>Sign In Page</div>
@@ -14,4 +17,6 @@ export default function Page() {
       <button onClick={() => signInEmail()}>Email</button>
     </div>
   );
-}
+};
+
+export default Page;

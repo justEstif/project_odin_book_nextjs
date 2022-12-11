@@ -1,11 +1,12 @@
+"use client";
 import Image from "next/image";
-import { getCurrentUser, getSession } from "@/lib/session";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const Page = async ({}: Props) => {
-  const user = await getCurrentUser();
-  console.log(user);
+  const { data: session } = useSession();
+  const user = session?.user;
   return (
     <div>
       <h1>Profile</h1>
@@ -25,3 +26,4 @@ const Page = async ({}: Props) => {
 };
 
 export default Page;
+
