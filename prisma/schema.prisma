@@ -43,7 +43,18 @@ model User {
   acceptedRequests Friends[] @relation("AcceptedRequests")
 
   // User Account: a user can have multiple accounts
-  Accounts Account[] @relation("Accounts")
+  accounts Account[] @relation("Accounts")
+  sessions Session[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map(name: "sessions")
 }
 
 model Friends {
@@ -127,6 +138,7 @@ model Account {
   userId String
 
   @@unique([provider, providerAccountId])
+  @@map(name: "accounts")
 }
 
 // store tokens for passwordless sign in
