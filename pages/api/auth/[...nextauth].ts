@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       const dbUser = await prisma.user.findUnique({
         where: {
-          id: token.id,
+          id: token.id || "",
         },
         include: {
           profile: true,
