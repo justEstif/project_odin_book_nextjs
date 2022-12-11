@@ -2,6 +2,6 @@ import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
   pages: {
-    signIn: "/auth/sign-in",
+    signIn: "/auth/sign-in", // custom sign in page
   },
 });
