@@ -10,6 +10,7 @@ const authOptions: NextAuthOptions = {
   pages: {
     newUser: "/auth/new-user", // redirect new user here
     signOut: "/auth/sign-out",
+    signIn: "/auth/sign-in", // custom sign in page
   },
   session: {
     strategy: "jwt",
@@ -45,7 +46,7 @@ const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, user }) {
+    jwt: async ({ token, user, isNewUser }) => {
       const dbUser = await prisma.user.findUnique({
         where: {
           id: token.id || "",
@@ -58,6 +59,7 @@ const authOptions: NextAuthOptions = {
       if (!dbUser && user) {
         token.id = user.id;
         token.email = user.email;
+        token.isNewUser = !!isNewUser;
         return token;
       }
 
@@ -66,9 +68,18 @@ const authOptions: NextAuthOptions = {
         token.email = dbUser.email;
         token.image = dbUser.profile.image;
         token.name = dbUser.profile.name;
+        token.isNewUser = !!isNewUser;
       }
 
       return token;
+    },
+
+    redirect: async ({ url, baseUrl }) => {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
 };
