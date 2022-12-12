@@ -5,5 +5,8 @@ export default withAuth({
     signIn: "/auth/sign-in", // custom sign in page
     newUser: "/auth/new-user", // redirect new user here
     signOut: "/auth/sign-out",
+    if (!isAuth) {
+      return NextResponse.redirect(new URL(`/sign-in`, req.url));
+    }
   },
 });
