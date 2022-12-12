@@ -1,22 +1,12 @@
-import { nanoid } from "nanoid";
-import { getProviders } from "next-auth/react";
-import SignInBtn from "./(components)/SignInBtn";
+import SignInForm from "./(components)/SignInForm";
 
 type Props = {};
 
-const Page = async ({}: Props) => {
-  const providers = await getProviders();
-
+const Page = ({}: Props) => {
   return (
     <div>
       <h1>Sign in Page</h1>
-      <div>Add signin form here</div>
-      <div>
-        {providers &&
-          Object.values(providers).map((provider) => (
-            <SignInBtn id={provider.id} name={provider.name} key={nanoid()} />
-          ))}
-      </div>
+      <SignInForm />
     </div>
   );
 };
