@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 type Props = {};
 
-const Page = async ({}: Props) => {
+const Page = ({}: Props) => {
   const { data: session } = useSession();
   const user = session?.user;
   return (
