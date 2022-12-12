@@ -1,44 +1,31 @@
 "use client";
 import { AuthSchema, TAuthSchema } from "@/lib/nextAuth/validation/auth";
 import { signIn } from "next-auth/react";
-import { FormEvent, Reducer, useReducer } from "react";
-import { z } from "zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 type Props = {};
 
 const SignInForm = ({}: Props) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const updateFieldValue =
-    (field: keyof TAuthSchema) => (event: FormEvent<HTMLInputElement>) => {
-      dispatch({
-        type: "UPDATE_FIELD_VALUE",
-        field,
-        value: event.currentTarget.value,
-      });
-    };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TAuthSchema>({
+    resolver: zodResolver(AuthSchema),
+  });
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      AuthSchema.parse(state);
-      await signIn("email", { email: state.email, callbackUrl: "/" });
-      dispatch({ type: "CLEAR_FORM" });
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        console.log(e.message);
-      }
-    }
+  const onSubmit: SubmitHandler<TAuthSchema> = async (data) => {
+    await signIn("email", { email: data.email, callbackUrl: "/" });
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label>
           Email
-          <input
-            value={state.email}
-            type="email"
-            onChange={updateFieldValue("email")}
-          />
+          <input {...register("email")} />
+          {errors.email?.message && <p>{errors.email?.message}</p>}
         </label>
         <button type="submit">Sign in with email</button>
       </form>
@@ -50,22 +37,3 @@ const SignInForm = ({}: Props) => {
 };
 
 export default SignInForm;
-
-const initialState: TAuthSchema = {
-  email: "",
-};
-
-type Action =
-  | { type: "UPDATE_FIELD_VALUE"; field: string; value: string }
-  | { type: "CLEAR_FORM" };
-
-const reducer: Reducer<TAuthSchema, Action> = (state, action) => {
-  switch (action.type) {
-    case "UPDATE_FIELD_VALUE":
-      return { ...state, [action.field]: action.value };
-    case "CLEAR_FORM":
-      return initialState;
-    default:
-      return state;
-  }
-};
