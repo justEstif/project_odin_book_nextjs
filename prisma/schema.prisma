@@ -37,13 +37,16 @@ model User {
   comments      Comment[] @relation("Comments")
   likedComments Comment[] @relation("LikedComments")
 
+  // received requests
+  sentRequests     User[] @relation("Requests")
+  receivedRequests User[] @relation("Requests")
+
   // friends
-  sentRequests     Friends[] @relation("SentRequests")
-  receivedRequests Friends[] @relation("ReceivedRequests")
-  acceptedRequests Friends[] @relation("AcceptedRequests")
+  friends         User[] @relation("Friends")
+  friendsRelation User[] @relation("Friends")
 
   // User Account: a user can have multiple accounts
-  accounts Account[] @relation("Accounts")
+  accounts Account[]
   sessions Session[]
 }
 
@@ -55,17 +58,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map(name: "sessions")
-}
-
-model Friends {
-  sentRequests     User   @relation("SentRequests", fields: [requestedId], references: [id])
-  requestedId      String
-  receivedRequests User   @relation("ReceivedRequests", fields: [receivedId], references: [id])
-  receivedId       String
-  friends          User   @relation("AcceptedRequests", fields: [acceptedId], references: [id])
-  acceptedId       String
-
-  @@id([requestedId, receivedId, acceptedId])
 }
 
 model Post {
@@ -134,7 +126,7 @@ model Account {
 
   session_state String?
 
-  user   User   @relation("Accounts", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   @@unique([provider, providerAccountId])
