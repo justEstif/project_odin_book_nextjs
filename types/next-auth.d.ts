@@ -7,6 +7,8 @@ declare module "next-auth/jwt" {
     email: string;
     image: string;
     name: string;
+    isNewUser: boolean;
+
   }
 }
 
@@ -21,6 +23,7 @@ declare module "next-auth" {
       email: string;
       image: string;
       name: string;
+      isNewUser: boolean;
     };
   }
 }
