@@ -16,15 +16,8 @@ const SignInForm = ({}: Props) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    await signIn("email", {
-      email: state.email,
-      callbackUrl: "/",
-    });
-
-    dispatch({
-      type: "CLEAR_FORM",
-    });
+    await signIn("email", { email: state.email, callbackUrl: "/" });
+    dispatch({ type: "CLEAR_FORM" });
   };
 
   return (
@@ -40,7 +33,9 @@ const SignInForm = ({}: Props) => {
         </label>
         <button type="submit">Sign in with email</button>
       </form>
-      <button onClick={() => signIn("facebook")}>Sign in with facebook</button>
+      <button onClick={async () => await signIn("facebook")}>
+        Sign in with facebook
+      </button>
     </div>
   );
 };

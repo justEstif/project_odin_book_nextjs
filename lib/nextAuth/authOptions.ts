@@ -46,7 +46,7 @@ const authOptions: NextAuthOptions = {
       return session;
     },
 
-    jwt: async ({ token, user, isNewUser }) => {
+    jwt: async ({ token, user }) => {
       const dbUser = await prisma.user.findUnique({
         where: {
           id: token.id || "",
@@ -59,7 +59,6 @@ const authOptions: NextAuthOptions = {
       if (!dbUser && user) {
         token.id = user.id;
         token.email = user.email;
-        token.isNewUser = !!isNewUser;
         return token;
       }
 
@@ -68,7 +67,6 @@ const authOptions: NextAuthOptions = {
         token.email = dbUser.email;
         token.image = dbUser.profile.image;
         token.name = dbUser.profile.name;
-        token.isNewUser = !!isNewUser;
       }
 
       return token;
