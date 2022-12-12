@@ -15,7 +15,7 @@
 
 | HTTP | Route              | Description                                      |
 | ---- | ------------------ | ------------------------------------------------ |
-| GET  | /users             | get user index page                              |
+| GET  | /users             | get user, friend status;                         |
 | GET  | /users/:id         | get user, profile, posts                         |
 | POST | /users/:id         | update profile                                   |
 | GET  | /users/:id/friends | get friends of user (optional current user info) |
