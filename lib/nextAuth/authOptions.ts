@@ -8,9 +8,9 @@ import PrismaAdapter from "@/lib/nextAuth/adapters/prisma";
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
-    newUser: "/auth/new-user", // redirect new user here
-    signOut: "/auth/sign-out",
-    signIn: "/auth/sign-in", // custom sign in page
+    newUser: "/new-user", // redirect new user here
+    signOut: "/sign-out",
+    signIn: "/sign-in", // custom sign in page
   },
   session: {
     strategy: "jwt",

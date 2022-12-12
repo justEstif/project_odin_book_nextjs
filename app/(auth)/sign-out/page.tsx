@@ -5,10 +5,8 @@ type Props = {};
 const Page = ({}: Props) => {
   return (
     <div>
-      <h1>Sign out Page</h1>
-      <button onClick={() => signOut({ callbackUrl: "/auth/sign-in" })}>
-        Sign out
-      </button>
+      <title>Sign out | Odin</title>
+      <button onClick={() => signOut()}>Sign out</button>
     </div>
   );
 };
