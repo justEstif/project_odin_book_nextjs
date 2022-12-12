@@ -21,7 +21,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/lib/*": ["lib/*"]
+      "@/lib/*": ["lib/*"],
+      "@/api/*": ["pages/api/*"]
     }
   },
   "include": [
