@@ -1,109 +1,102 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
-const user = (): Prisma.UserCreateInput => ({
+const getProfileScalarData = () => ({
   id: faker.datatype.uuid(),
-  email: faker.internet.email(),
-
-  profile: {
-    create: {
-      id: faker.datatype.uuid(),
-      name: faker.name.fullName(),
-      bio: faker.company.catchPhrase(),
-      image: faker.image.image(),
-    },
-  },
+  bio: faker.company.catchPhrase(),
+  image: faker.image.image(),
+  name: faker.name.fullName(),
 });
 
-const userWithProfile = (): Prisma.UserCreateInput => ({
+const getUserScalarData = () => ({
   id: faker.datatype.uuid(),
   email: faker.internet.email(),
-
-  profile: {
-    create: {
-      id: faker.datatype.uuid(),
-      name: faker.name.fullName(),
-      bio: faker.company.catchPhrase(),
-      image: faker.image.image(),
-    },
-  },
+  emailVerified: faker.date.soon(),
 });
 
-const userWithPost = (): Prisma.UserCreateInput => ({
+const getPostAndCommentScalarData = () => ({
   id: faker.datatype.uuid(),
-  email: faker.internet.email(),
+  content: faker.hacker.phrase(),
+});
 
-  profile: {
-    create: {
-      id: faker.datatype.uuid(),
-      name: faker.name.fullName(),
-      bio: faker.company.catchPhrase(),
-      image: faker.image.image(),
-    },
-  },
-  posts: {
-    create: [
-      {
-        id: faker.datatype.uuid(),
-        content: faker.lorem.sentence(),
+const main = async () => {
+  await prisma.user.deleteMany({});
+  await prisma.post.deleteMany({});
+  await prisma.post.deleteMany({});
+  await prisma.comment.deleteMany({});
+  await prisma.profile.deleteMany({});
+  await prisma.session.deleteMany({});
+  await prisma.account.deleteMany({});
+  await prisma.verificationToken.deleteMany({});
+
+  const user1 = await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: {
+        create: { ...getProfileScalarData() },
       },
-    ],
-  },
-});
-
-const userWithPosts = (): Prisma.UserCreateInput => ({
-  id: faker.datatype.uuid(),
-  email: faker.internet.email(),
-
-  profile: {
-    create: {
-      id: faker.datatype.uuid(),
-      name: faker.name.fullName(),
-      bio: faker.company.catchPhrase(),
-      image: faker.image.image(),
     },
-  },
-  posts: {
-    create: [
-      {
-        id: faker.datatype.uuid(),
-        content: faker.lorem.sentence(),
-      },
-      {
-        id: faker.datatype.uuid(),
-        content: faker.lorem.sentence(),
-      },
-    ],
-  },
-});
+  });
 
-const userData: Prisma.UserCreateInput[] = [
-  user(),
-  user(),
-  user(),
-  userWithProfile(),
-  userWithProfile(),
-  userWithProfile(),
-  userWithProfile(),
-  userWithPost(),
-  userWithPost(),
-  userWithPost(),
-  userWithPosts(),
-  userWithPosts(),
-  userWithPosts(),
-  userWithPosts(),
-];
+  const user2 = await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: {
+        create: { ...getProfileScalarData() },
+      },
+    },
+  });
 
-async function main() {
-  console.log(`Start seeding ...`);
-  for (const u of userData) {
-    const user = await prisma.user.create({ data: u });
-    console.log(`Created user with id: ${user.id}`);
-  }
-  console.log(`Seeding finished.`);
-}
+  const user3 = await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: {
+        create: { ...getProfileScalarData() },
+      },
+      sentRequests: {
+        connect: {
+          id: user2.id,
+        },
+      },
+      friends: {
+        connect: {
+          id: user1.id,
+        },
+      },
+      posts: {
+        create: [
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                {
+                  id: user1.id,
+                },
+                {
+                  id: user2.id,
+                },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user1.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user2.id } },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  });
+};
 
 main()
   .then(async () => {

@@ -103,3 +103,23 @@ type Like = {
   user: string; // User id
 };
 ```
+
+- When you send a friend request:
+
+```
+sentRequests: {
+  connect: {
+    id: user1.id,
+  },
+},
+```
+
+- In turn the other user, will get the user id in the receivedRequests field
+
+- always add the person to friendsRelation when you accept their request
+
+- user1 sends fr to user2
+- user2 accepts fr from user1
+  - user2 friendsRelation
+  - user1 friends?
+  -
