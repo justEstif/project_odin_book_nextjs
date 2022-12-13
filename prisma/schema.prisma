@@ -92,7 +92,7 @@ model Comment {
 
   // post
   post   Post   @relation("Comments", fields: [postId], references: [id], onDelete: Cascade)
-  postId String @unique
+  postId String
 
   // user
   user   User   @relation("Comments", fields: [userId], references: [id], onDelete: Cascade)
