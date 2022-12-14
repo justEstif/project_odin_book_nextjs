@@ -34,60 +34,39 @@ const main = async () => {
   const user1 = await prisma.user.create({
     data: {
       ...getUserScalarData(),
-      profile: {
-        create: { ...getProfileScalarData() },
-      },
+      profile: { create: { ...getProfileScalarData() } },
     },
   });
 
   const user2 = await prisma.user.create({
     data: {
       ...getUserScalarData(),
-      profile: {
-        create: { ...getProfileScalarData() },
-      },
+      profile: { create: { ...getProfileScalarData() } },
     },
   });
 
   const user3 = await prisma.user.create({
     data: {
       ...getUserScalarData(),
-      profile: {
-        create: { ...getProfileScalarData() },
-      },
-      sentRequests: {
-        connect: {
-          id: user2.id,
-        },
-      },
-      friends: {
-        connect: {
-          id: user1.id,
-        },
-      },
+      profile: { create: { ...getProfileScalarData() } },
+      sentRequests: { connect: { id: user2.id } },
+      friends: { connect: { id: user1.id } },
       posts: {
         create: [
           {
             ...getPostAndCommentScalarData(),
-            likes: {
-              connect: [
-                {
-                  id: user1.id,
-                },
-                {
-                  id: user2.id,
-                },
-              ],
-            },
+            likes: { connect: [{ id: user1.id }, { id: user2.id }] },
             comments: {
               create: [
                 {
                   ...getPostAndCommentScalarData(),
                   user: { connect: { id: user1.id } },
+                  likes: { connect: { id: user2.id } },
                 },
                 {
                   ...getPostAndCommentScalarData(),
                   user: { connect: { id: user2.id } },
+                  likes: { connect: { id: user1.id } },
                 },
               ],
             },
