@@ -54,7 +54,7 @@ type TUser = Prisma.UserGetPayload<typeof userRequestsFriends>;
 
 export type TGetResponse = {
   user: TUser | null;
-  users: TUsers;
+  users: TUsers[];
 };
 /**
  * @description api handler to get all users in website
