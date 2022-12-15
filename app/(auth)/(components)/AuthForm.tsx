@@ -1,5 +1,5 @@
 "use client";
-import { AuthSchema, TAuthSchema } from "@/lib/nextAuth/validation/auth";
+import { AuthSchema, TAuthSchema } from "@/lib-client/validation/auth";
 import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,4 +37,3 @@ const SignInForm = ({}: Props) => {
 };
 
 export default SignInForm;
-

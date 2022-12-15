@@ -1,12 +1,11 @@
-"use client";
-import { signOut } from "next-auth/react";
+import SignOutBtn from "./(components)/SignOutBtn";
 type Props = {};
 
 const Page = ({}: Props) => {
   return (
     <div>
       <title>Sign out | Odin</title>
-      <button onClick={() => signOut()}>Sign out</button>
+      <SignOutBtn />
     </div>
   );
 };

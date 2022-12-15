@@ -2,10 +2,10 @@
 import { nanoid } from "nanoid";
 import useSwr from "swr";
 import Link from "next/link";
-import { fetcher } from "@/lib/utils";
-import type { TGet } from "@/lib/api/users";
+import { TGet } from "lib-server/services/users";
 
 type Props = {};
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Page = ({}: Props) => {
   // TODO: how to check if it is an error
@@ -17,20 +17,15 @@ const Page = ({}: Props) => {
     return <div>Page has error</div>;
   }
 
-  const users = data.users;
-  const { friendsId, sentRequestsId, receivedRequestsId } = data.ids;
-
-  if (friendsId && sentRequestsId && receivedRequestsId) {
-    for (const user of data.users) {
-      if (friendsId.includes(user.id)) {
-        // something
-      } else if (receivedRequestsId.includes(user.id)) {
-        // something
-      } else if (sentRequestsId.includes(user.id)) {
-        // something
-      }
-      // if (user.id)
+  for (const user of data.users) {
+    if (friendsId.includes(user.id)) {
+      // something
+    } else if (receivedRequestsId.includes(user.id)) {
+      // something
+    } else if (sentRequestsId.includes(user.id)) {
+      // something
     }
+    // if (user.id)
   }
   return (
     <div>

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import authOptions from "@/lib/nextAuth/authOptions";
+import authOptions from "@/lib-server/nextAuth/authOptions";
 import { unstable_getServerSession } from "next-auth";
 
 type TReq = {

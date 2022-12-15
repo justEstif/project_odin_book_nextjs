@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
-import authOptions from "@/lib/nextAuth/authOptions";
-import { GetResponse } from "@/lib/api/users";
+import authOptions from "@/lib-server/nextAuth/authOptions";
+import { GetResponse } from "@/lib-server/services/users";
 
 /**
  * @description api handler to get all users in website
