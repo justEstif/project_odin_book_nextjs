@@ -73,3 +73,15 @@ api/
 │ │ ├─ index.ts: DELETE, PUT
 │ ├─ index.ts: POST
 ```
+
+- users index page
+
+1. get all users
+   - /api/users -> get all users
+2. check if user is friend, has sent a request or received a request
+   - option 1: check if the current user id is in the returned user friends ??
+     - backend includes all the friends of the user
+   - option 2: check if the return user is in the current user friends
+     - front end get all the friends of the current user
+     - use pagnation to return a certain amount
+3. use that to control what is seen on the website
