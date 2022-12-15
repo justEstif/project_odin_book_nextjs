@@ -1,14 +1,37 @@
 import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+// TODO: prisma pagination
 
-export class GetResponse {
-  private id: string;
-
-  constructor(id: string) {
-    this.id = id;
-  }
-
-  private async getUsers() {
+export const GetResponse = async (id: string) => {
+  const user = async () => {
+    return await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        friends: {
+          select: {
+            id: true,
+          },
+        },
+        friendsRelation: {
+          select: {
+            id: true,
+          },
+        },
+        sentRequests: {
+          select: {
+            id: true,
+          },
+        },
+        receivedRequests: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+  };
+  const users = async () => {
     return await prisma.user.findMany({
       select: {
         id: true,
@@ -20,54 +43,27 @@ export class GetResponse {
         },
       },
     });
-  }
+  };
+  const ids = async () => {
+    const currentUser = await user();
 
-  private async getUser() {
-    return await prisma.user.findUnique({
-      where: {
-        id: this.id,
-      },
-      select: {
-        friends: true,
-        friendsRelation: true,
-        sentRequests: true,
-        receivedRequests: true,
-      },
-    });
-  }
-
-  get response() {
-    return (async () => {
+    if (currentUser) {
       return {
-        users: await this.getUsers(),
-        user: await this.getUser(),
+        friendsId: [
+          ...currentUser.friends.map((el) => el.id),
+          ...currentUser.friendsRelation.map((el) => el.id),
+        ],
+        receivedRequestsId: currentUser.receivedRequests.map((el) => el.id),
+        sentRequestsId: currentUser.sentRequests.map((el) => el.id),
       };
-    })();
-  }
-}
-
-export type TGetUsers = Prisma.UserGetPayload<{
-  select: {
-    id: true;
-    profile: {
-      select: {
-        name: true;
-        image: true;
-      };
-    };
+    } else {
+      return {};
+    }
   };
-}>;
-
-export type TGetUser = Prisma.UserGetPayload<{
-  select: {
-    friends: true;
-    friendsRelation: true;
-    sentRequests: true;
-    receivedRequests: true;
+  return {
+    ids: await ids(),
+    users: await users(),
   };
-}>;
-
-export type TGetResponse = {
-  user: TGetUser | null;
-  users: TGetUsers[];
 };
+
+export type TGet = Awaited<ReturnType<typeof GetResponse>>;
