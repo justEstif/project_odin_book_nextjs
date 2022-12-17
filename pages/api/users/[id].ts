@@ -1,6 +1,16 @@
-import type { NextApiHandler } from "next";
+import type { NextApiResponse, NextApiRequest } from "next";
+import { TPostsFriendsCount, UserService } from "@/lib-server/services/user";
 
-const handler: NextApiHandler = (req, res) => {
+export type TResponse =
+  | TPostsFriendsCount
+  | {
+    message: string;
+  };
+
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<TResponse>
+) => {
   const {
     query: { id },
     method,
@@ -8,8 +18,12 @@ const handler: NextApiHandler = (req, res) => {
 
   switch (method) {
     case "GET":
-      // get user, profile, posts
-      res.status(200).json({ id, name: `User ${id}` });
+      if (typeof id === "string") {
+        const data = await UserService.postsFriendsCount(id);
+        res.status(200).json(data);
+      } else {
+        res.status(400).json({ message: "Invalid id type" });
+      }
       break;
     default:
       res.setHeader("Allow", ["GET"]);
