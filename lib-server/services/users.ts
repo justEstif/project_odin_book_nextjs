@@ -18,7 +18,7 @@ export const NameImage = async (id: string) => {
             id: id,
           },
         },
-        friendsRelation: {
+        friendsOf: {
           none: {
             id: id,
           },
@@ -35,6 +35,26 @@ export const NameImage = async (id: string) => {
           select: {
             name: true,
             image: true,
+          },
+        },
+      },
+    });
+  };
+  const receivedRequests = async () => {
+    return await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        receivedRequests: {
+          select: {
+            id: true,
+            profile: {
+              select: {
+                name: true,
+                image: true,
+              },
+            },
           },
         },
       },
@@ -66,27 +86,7 @@ export const NameImage = async (id: string) => {
         id: id,
       },
       select: {
-        friendsRelation: {
-          select: {
-            id: true,
-            profile: {
-              select: {
-                name: true,
-                image: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  };
-  const receivedRequests = async () => {
-    return await prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        sentRequests: {
+        friendsOf: {
           select: {
             id: true,
             profile: {

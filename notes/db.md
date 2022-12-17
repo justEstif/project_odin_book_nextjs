@@ -114,12 +114,35 @@ sentRequests: {
 },
 ```
 
-- In turn the other user, will get the user id in the receivedRequests field
-
-- always add the person to friendsRelation when you accept their request
-
-- user1 sends fr to user2
-- user2 accepts fr from user1
-  - user2 friendsRelation
-  - user1 friends?
-  -
+```javascript
+const user3 = await prisma.user.create({
+  data: {
+    ...getUserScalarData(),
+    profile: { create: { ...getProfileScalarData() } },
+    sentRequests: { connect: { id: user2.id } },
+    friends: { connect: { id: user1.id } },
+    posts: {
+      create: [
+        {
+          ...getPostAndCommentScalarData(),
+          likes: { connect: [{ id: user1.id }, { id: user2.id }] },
+          comments: {
+            create: [
+              {
+                ...getPostAndCommentScalarData(),
+                user: { connect: { id: user1.id } },
+                likes: { connect: { id: user2.id } },
+              },
+              {
+                ...getPostAndCommentScalarData(),
+                user: { connect: { id: user2.id } },
+                likes: { connect: { id: user1.id } },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+});
+```

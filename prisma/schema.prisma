@@ -42,8 +42,8 @@ model User {
   receivedRequests User[] @relation("Requests")
 
   // friends
-  friends         User[] @relation("Friends")
-  friendsRelation User[] @relation("Friends")
+  friends   User[] @relation("Friends")
+  friendsOf User[] @relation("Friends")
 
   // User Account: a user can have multiple accounts
   accounts Account[]

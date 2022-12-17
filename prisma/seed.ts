@@ -41,7 +41,16 @@ const main = async () => {
   const user2 = await prisma.user.create({
     data: {
       ...getUserScalarData(),
-      profile: { create: { ...getProfileScalarData() } },
+      profile: {
+        create: {
+          ...getProfileScalarData(),
+        },
+      },
+      receivedRequests: {
+        connect: {
+          id: user1.id,
+        },
+      },
     },
   });
 
@@ -49,29 +58,66 @@ const main = async () => {
     data: {
       ...getUserScalarData(),
       profile: { create: { ...getProfileScalarData() } },
-      sentRequests: { connect: { id: user2.id } },
+      sentRequests: {
+        connect: {
+          id: user2.id,
+        },
+      },
       friends: { connect: { id: user1.id } },
-      posts: {
-        create: [
-          {
-            ...getPostAndCommentScalarData(),
-            likes: { connect: [{ id: user1.id }, { id: user2.id }] },
-            comments: {
-              create: [
-                {
-                  ...getPostAndCommentScalarData(),
-                  user: { connect: { id: user1.id } },
-                  likes: { connect: { id: user2.id } },
-                },
-                {
-                  ...getPostAndCommentScalarData(),
-                  user: { connect: { id: user2.id } },
-                  likes: { connect: { id: user1.id } },
-                },
-              ],
-            },
-          },
-        ],
+    },
+  });
+
+  const user4 = await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: { create: { ...getProfileScalarData() } },
+      sentRequests: {
+        connect: [{ id: user2.id }, { id: user3.id }],
+      },
+      friends: {
+        connect: { id: user1.id },
+      },
+    },
+  });
+
+  const user5 = await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: { create: { ...getProfileScalarData() } },
+      friends: {
+        connect: [{ id: user1.id }, { id: user2.id }],
+      },
+      sentRequests: {
+        connect: [{ id: user3.id }, { id: user4.id }],
+      },
+    },
+  });
+
+  const user6 = await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: { create: { ...getProfileScalarData() } },
+      sentRequests: {
+        connect: [{ id: user4.id }, { id: user5.id }],
+      },
+      friends: {
+        connect: [{ id: user1.id }, { id: user2.id }, { id: user3.id }],
+      },
+    },
+  });
+
+  const user7 = await prisma.user.create({
+    data: {
+      id: faker.datatype.uuid(),
+      email: "yesepe1201@fanneat.com",
+      emailVerified: faker.date.soon(),
+
+      profile: { create: { ...getProfileScalarData() } },
+      sentRequests: {
+        connect: [{ id: user1.id }, { id: user2.id }, { id: user3.id }],
+      },
+      friends: {
+        connect: [{ id: user4.id }, { id: user5.id }, { id: user6.id }],
       },
     },
   });

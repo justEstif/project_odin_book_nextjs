@@ -13,24 +13,24 @@
 
 ## Users:
 
-| HTTP | Route              | Description                                      |
-| ---- | ------------------ | ------------------------------------------------ |
-| GET  | /users             | get user, friend status;                         |
-| GET  | /users/:id         | get user, profile, posts                         |
-| GET  | /users/:id/friends | get friends of user (optional current user info) |
-| GET  | /users/:id/posts   | get posts of user (optional current user info)   |
-| POST | /users/:id         | update profile                                   |
+| HTTP     | Route              | Description                                      |
+| -------- | ------------------ | ------------------------------------------------ |
+| [X] GET  | /users             | get user, friend status;                         |
+| [X] GET  | /users/:id         | get user, profile, posts                         |
+| [X] GET  | /users/:id/friends | get friends of user (optional current user info) |
+| [ ] GET  | /users/:id/posts   | get posts of user (optional current user info)   |
+| [ ] POST | /users/:id         | update profile                                   |
 
 ## Posts:
 
-| HTTP   | Route               | Description                                  |
-| ------ | ------------------- | -------------------------------------------- |
-| POST   | /posts              | create a post                                |
-| GET    | /posts/:id          | get post & its comments(count), likes(count) |
-| PUT    | /posts/:id          | update a post                                |
-| DELETE | /posts/:id          | delete post, comments, likes                 |
-| GET    | /posts/:id/comments | get post comments                            |
-| GET    | /posts/:id/likes    | get post likes                               |
+| HTTP       | Route               | Description                                  |
+| ---------- | ------------------- | -------------------------------------------- |
+| [ ] GET    | /posts/:id/comments | get post comments                            |
+| [ ] GET    | /posts/:id/likes    | get post likes                               |
+| [ ] GET    | /posts/:id          | get post & its comments(count), likes(count) |
+| [ ] POST   | /posts              | create a post                                |
+| [ ] PUT    | /posts/:id          | update a post                                |
+| [ ] DELETE | /posts/:id          | delete post, comments, likes                 |
 
 ## Friends:
 
