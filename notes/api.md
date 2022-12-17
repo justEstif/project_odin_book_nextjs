@@ -17,9 +17,9 @@
 | ---- | ------------------ | ------------------------------------------------ |
 | GET  | /users             | get user, friend status;                         |
 | GET  | /users/:id         | get user, profile, posts                         |
-| POST | /users/:id         | update profile                                   |
 | GET  | /users/:id/friends | get friends of user (optional current user info) |
 | GET  | /users/:id/posts   | get posts of user (optional current user info)   |
+| POST | /users/:id         | update profile                                   |
 
 ## Posts:
 

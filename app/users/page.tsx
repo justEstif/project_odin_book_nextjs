@@ -1,7 +1,5 @@
 "use client";
-import { nanoid } from "nanoid";
 import useSwr from "swr";
-import Link from "next/link";
 import { TResponse } from "@/api/users";
 
 type Props = {};

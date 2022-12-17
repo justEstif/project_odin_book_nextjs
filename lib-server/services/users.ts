@@ -1,5 +1,4 @@
 import prisma from "@/lib-server/prisma";
-import { Prisma } from "@prisma/client";
 // TODO: prisma pagination
 
 /**
