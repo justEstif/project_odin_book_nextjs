@@ -1,29 +1,28 @@
-import type { NextApiResponse, NextApiRequest } from "next";
-import { TPostsFriendsCount, UserService } from "@/lib-server/services/user";
+import withAuth from "@/lib-server/middleware/with-auth";
+import prisma from "@/lib-server/prisma";
+import type { NextApiHandler } from "next";
 
-export type TResponse =
-  | TPostsFriendsCount
+type TGetResponse =
+  | TGetPostsProfileFriendsCount
   | {
     message: string;
   };
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<TResponse>
-) => {
+export type TResponse = TGetResponse;
+const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
     query: { id },
     method,
   } = req;
 
   switch (method) {
+    /** @access logged in user: not required to be the current user */
     case "GET":
       if (typeof id === "string") {
-        const data = await UserService.postsFriendsCount(id);
+        const data = await getPostsProfileFriendsCount(id);
         res.status(200).json(data);
-      } else {
-        res.status(400).json({ message: "Invalid id type" });
       }
+      res.status(403).end();
       break;
     default:
       res.setHeader("Allow", ["GET"]);
@@ -31,4 +30,22 @@ const handler = async (
   }
 };
 
-export default handler;
+export default withAuth(handler);
+
+const getPostsProfileFriendsCount = async (id: string) =>
+  await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      posts: true,
+      profile: true,
+      _count: {
+        select: { friends: true },
+      },
+    },
+  });
+
+type TGetPostsProfileFriendsCount = Awaited<
+  ReturnType<typeof getPostsProfileFriendsCount>
+>;
