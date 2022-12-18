@@ -18,7 +18,7 @@
 | [X] GET  | /users             | get user, friend status;                         |
 | [X] GET  | /users/:id         | get user, profile, posts                         |
 | [X] GET  | /users/:id/friends | get friends of user (optional current user info) |
-| [ ] GET  | /users/:id/posts   | get posts of user (optional current user info)   |
+| [X] GET  | /users/:id/posts   | get posts of user (optional current user info)   |
 | [ ] POST | /users/:id         | update profile                                   |
 
 ## Posts:
@@ -85,3 +85,20 @@ api/
      - front end get all the friends of the current user
      - use pagnation to return a certain amount
 3. use that to control what is seen on the website
+
+# RESTFul API
+
+| Type | Route                           | Function                                          | Auth                                                                  |
+| ---- | ------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------- |
+| GET  | /users                          | get all users                                     | get the users in relation to the current user, don't get current user |
+| GET  | /users/userId                   | get user using user id                            | get the users in relation to the current user                         |
+| GET  | /users/userId/profile           | get user profile using user id                    | get the users in relation to the current user                         |
+| GET  | /users/userId/posts             | get user posts using user id                      | get the users in relation to the current user                         |
+| GET  | /users/userId/friends           | get user friends using user id                    | get the users in relation to the current user                         |
+| GET  | /users/userId/liked-posts       | get user liked posts using user id                | only get posts if current user matches query id                       |
+| GET  | /users/userId/sent-requests     | get user received-requests                        | only get requests if current user matches query id                    |
+| GET  | /users/userId/received-requests | get user sent-requests                            | only get requests if current user matches query id                    |
+| GET  | /posts                          | get posts                                         | get posts in relation to current user                                 |
+| GET  | /posts/postId                   | get posts, likes and comments count using post id | get the post in relation to the current user                          |
+| GET  | /posts/postId/comments          | get post comment using post id                    | get the post in relation to the current user                          |
+| GET  | /posts/postId/likes             | get post likes using post id                      | get the post in relation to the current user                          |
