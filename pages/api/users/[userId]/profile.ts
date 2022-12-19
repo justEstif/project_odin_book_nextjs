@@ -9,6 +9,10 @@ const handler: NextApiHandler = async (req, res) => {
   } = req;
 
   switch (method) {
+    /**
+     * @description get profile of user
+     * @access any logged in user
+     */
     case "GET":
       if (typeof userId === "string") {
         const data = await getProfile(userId);

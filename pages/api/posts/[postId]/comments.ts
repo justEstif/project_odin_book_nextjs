@@ -9,10 +9,12 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   } = req;
 
   switch (method) {
-    /** @access only if current user matches request id */
+    /**
+     * @description get comments of a post
+     * @access any logged in user
+     */
     case "GET":
       if (typeof postId === "string" && typeof currentUserId === "string") {
-        // TODO: make sure this includes likes count, if current user liked, comments count
         const data = await getPostComments(postId);
         res.status(200).json(data);
       }

@@ -9,7 +9,10 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   } = req;
 
   switch (method) {
-    /** @access logged in user: not required to be the current user */
+    /**
+     * @description get posts, profile, and relation with user by returning its id in the relation type
+     * @access any logged in user
+     */
     case "GET":
       if (typeof userId === "string" && typeof currentUserId === "string") {
         const data = await getPostsProfileFriendsCount(userId, currentUserId);

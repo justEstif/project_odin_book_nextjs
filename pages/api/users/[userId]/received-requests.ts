@@ -9,7 +9,10 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   } = req;
 
   switch (method) {
-    /** @access only if current user matches request id */
+    /**
+     * @description get received requests of current user
+     * @access only if current user matches request id
+     */
     case "GET":
       if (
         typeof userId === "string" &&

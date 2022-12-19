@@ -8,14 +8,17 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
     query: { userId, currentUserId },
   } = req;
   switch (method) {
-    /** @access only if current user matches request id */
+    /**
+     * @description get all the liked posts
+     * @access any logged in user
+     */
     case "GET":
       if (
         typeof userId === "string" &&
         typeof currentUserId === "string" &&
         userId === currentUserId
       ) {
-        const data = await getLikedPosts(userId);
+        const data = await getLikedPosts(currentUserId);
         res.status(200).json(data);
       }
       res.status(403).end();
@@ -29,9 +32,9 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 export default withAuth(handler);
 export type TResponse = Awaited<ReturnType<typeof getLikedPosts>>;
 
-const getLikedPosts = async (id: string) => {
+const getLikedPosts = async (currentUserId: string) => {
   return await prisma.user.findUnique({
-    where: { id: id },
+    where: { id: currentUserId },
     select: { likedPosts: true },
   });
 };

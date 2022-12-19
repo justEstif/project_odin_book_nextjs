@@ -9,7 +9,10 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   } = req;
 
   switch (method) {
-    /** @description get posts of friends of current user */
+    /**
+     * @description get posts of friends of current user
+     * @access any logged in user
+     */
     case "GET":
       if (typeof currentUserId === "string") {
         const data = await getPosts(currentUserId);

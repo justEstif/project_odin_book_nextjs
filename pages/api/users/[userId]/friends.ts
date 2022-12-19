@@ -8,7 +8,10 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   } = req;
 
   switch (method) {
-    /** @access logged in user: not required to be the current user */
+    /**
+     * @description get friends of user
+     * @access any logged in user
+     */
     case "GET":
       if (typeof userId === "string") {
         const friends = await getFriends(userId);
@@ -28,6 +31,6 @@ export type TResponse = Awaited<ReturnType<typeof getFriends>>;
 const getFriends = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id: id },
-    select: { friends: true },
+    select: { friends: true, friendsOf: true },
   });
 };

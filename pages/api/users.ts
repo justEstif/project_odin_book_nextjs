@@ -9,8 +9,8 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   } = req;
   switch (method) {
     /**
-     * @description get all users in relation to the current user
-     * @access logged in user (current user id)
+     * @description get all users name, image and id in relation to the current user
+     * @access any logged in user
      */
     case "GET":
       if (currentUserId && typeof currentUserId === "string") {
@@ -28,18 +28,16 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 export default withAuth(handler);
 export type TResponse = Awaited<ReturnType<typeof getNameImage>>;
 
-const getNameImage = async (id: string) => {
+const getNameImage = async (currentUserId: string) => {
   return {
-    friends: await getFriendsNameImage(id),
-    sentRequests: await getSentRequestsNameImage(id),
-    receivedRequests: await getReceivedRequestsNameImage(id),
-    others: await getOthersNameImage(id),
+    relatedUsers: await getRelatedUsers(currentUserId),
+    unrelatedUsers: await getUnRelatedUsers(currentUserId),
   };
 };
 
-const getFriendsNameImage = async (id: string) => {
+const getRelatedUsers = async (currentUserId: string) => {
   return await prisma.user.findUnique({
-    where: { id },
+    where: { id: currentUserId },
     select: {
       friends: {
         select: {
@@ -47,22 +45,19 @@ const getFriendsNameImage = async (id: string) => {
           profile: { select: { name: true, image: true } },
         },
       },
-
       friendsOf: {
         select: {
           id: true,
           profile: { select: { name: true, image: true } },
         },
       },
-    },
-  });
-};
-
-const getSentRequestsNameImage = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id: id },
-    select: {
       sentRequests: {
+        select: {
+          id: true,
+          profile: { select: { name: true, image: true } },
+        },
+      },
+      receivedRequests: {
         select: {
           id: true,
           profile: { select: { name: true, image: true } },
@@ -72,28 +67,14 @@ const getSentRequestsNameImage = async (id: string) => {
   });
 };
 
-const getReceivedRequestsNameImage = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id: id },
-    select: {
-      sentRequests: {
-        select: {
-          id: true,
-          profile: { select: { name: true, image: true } },
-        },
-      },
-    },
-  });
-};
-
-const getOthersNameImage = async (id: string) => {
+const getUnRelatedUsers = async (currentUserId: string) => {
   return await prisma.user.findMany({
     where: {
-      sentRequests: { none: { id } },
-      receivedRequests: { none: { id } },
-      friendsOf: { none: { id } },
-      friends: { none: { id } },
-      NOT: { id },
+      sentRequests: { none: { id: currentUserId } },
+      receivedRequests: { none: { id: currentUserId } },
+      friendsOf: { none: { id: currentUserId } },
+      friends: { none: { id: currentUserId } },
+      NOT: { id: currentUserId },
     },
     select: {
       id: true,
