@@ -1,20 +1,20 @@
 import prisma from "@/lib-server/prisma";
-import { NextApiHandler } from "next";
+import type { NextApiHandler } from "next";
 
-export type TResponse = TGetResponse;
-type TGetResponse = TGetLikedPosts | { message: string };
+type TGetResponse = TGetFriends;
 
 const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
+    query: { userId },
     method,
-    query: { id },
   } = req;
+
   switch (method) {
     /** @access logged in user: not required to be the current user */
     case "GET":
-      if (typeof id === "string") {
-        const data = await getLikedPosts(id);
-        res.status(200).json(data);
+      if (typeof userId === "string") {
+        const friends = await getFriends(userId);
+        res.status(200).json(friends);
       }
       res.status(403).end();
       break;
@@ -25,12 +25,13 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default handler;
+export type TResponse = TGetResponse;
 
-const getLikedPosts = async (id: string) => {
+const getFriends = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id: id },
-    select: { likedPosts: true },
+    select: { friends: true },
   });
 };
 
-type TGetLikedPosts = Awaited<ReturnType<typeof getLikedPosts>>;
+type TGetFriends = Awaited<ReturnType<typeof getFriends>>;

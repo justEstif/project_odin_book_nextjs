@@ -2,18 +2,22 @@ import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 import withAuth from "@/lib-server/middleware/with-auth";
 
-type TGetResponse = TGetNameImage | { message: string };
+type TGetResponse = TGetNameImage;
 export type TResponse = TGetResponse;
 
 const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
     method,
-    query: { userId },
+    query: { currentUserId },
   } = req;
   switch (method) {
+    /**
+     * @description get all users in relation to the current user
+     * @access logged in user (current user id)
+     */
     case "GET":
-      if (userId && typeof userId === "string") {
-        const data = await getNameImage(userId);
+      if (currentUserId && typeof currentUserId === "string") {
+        const data = await getNameImage(currentUserId);
         res.status(200).json(data);
       }
       res.status(403).end();
@@ -39,19 +43,19 @@ type TGetNameImage = Awaited<ReturnType<typeof getNameImage>>;
 
 const getFriendsNameImage = async (id: string) => {
   return await prisma.user.findUnique({
-    where: {
-      id: id,
-    },
+    where: { id },
     select: {
+      friends: {
+        select: {
+          id: true,
+          profile: { select: { name: true, image: true } },
+        },
+      },
+
       friendsOf: {
         select: {
           id: true,
-          profile: {
-            select: {
-              name: true,
-              image: true,
-            },
-          },
+          profile: { select: { name: true, image: true } },
         },
       },
     },
@@ -65,9 +69,7 @@ const getSentRequestsNameImage = async (id: string) => {
       sentRequests: {
         select: {
           id: true,
-          profile: {
-            select: { name: true, image: true },
-          },
+          profile: { select: { name: true, image: true } },
         },
       },
     },
@@ -81,9 +83,7 @@ const getReceivedRequestsNameImage = async (id: string) => {
       sentRequests: {
         select: {
           id: true,
-          profile: {
-            select: { name: true, image: true },
-          },
+          profile: { select: { name: true, image: true } },
         },
       },
     },
@@ -93,16 +93,15 @@ const getReceivedRequestsNameImage = async (id: string) => {
 const getOthersNameImage = async (id: string) => {
   return await prisma.user.findMany({
     where: {
-      sentRequests: { none: { id: id } },
-      receivedRequests: { none: { id: id } },
-      friendsOf: { none: { id: id } },
-      friends: { none: { id: id } },
+      sentRequests: { none: { id } },
+      receivedRequests: { none: { id } },
+      friendsOf: { none: { id } },
+      friends: { none: { id } },
+      NOT: { id },
     },
     select: {
       id: true,
-      profile: {
-        select: { name: true, image: true },
-      },
+      profile: { select: { name: true, image: true } },
     },
   });
 };

@@ -1,22 +1,20 @@
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
-import withAuth from "@/lib-server/middleware/with-auth";
 
-type TGetResponse = TGetFriends | { message: string };
-export type TResponse = TGetResponse;
+type TGetResponse = TGetPosts;
 
 const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
-    query: { id },
+    query: { userId },
     method,
   } = req;
 
   switch (method) {
     /** @access logged in user: not required to be the current user */
     case "GET":
-      if (typeof id === "string") {
-        const friends = await getFriends(id);
-        res.status(200).json(friends);
+      if (typeof userId === "string") {
+        const data = await getPosts(userId);
+        res.status(200).json(data);
       }
       res.status(403).end();
       break;
@@ -26,13 +24,14 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
   }
 };
 
-export default withAuth(handler);
+export default handler;
+export type TResponse = TGetResponse;
 
-const getFriends = async (id: string) => {
+const getPosts = async (id: string) => {
   return await prisma.user.findUnique({
-    where: { id: id },
-    select: { friends: true },
+    where: { id },
+    select: { posts: true },
   });
 };
 
-type TGetFriends = Awaited<ReturnType<typeof getFriends>>;
+type TGetPosts = Awaited<ReturnType<typeof getPosts>>;

@@ -10,6 +10,7 @@ const Page = ({}: Props) => {
     <div>
       <div>Home Page</div>
       <div>{user?.name}</div>
+      <div>{user?.id}</div>
     </div>
   );
 };

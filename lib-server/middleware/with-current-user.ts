@@ -1,10 +1,10 @@
-import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import type { NextApiHandler } from "next";
 import { unstable_getServerSession } from "next-auth/next";
 import { z } from "zod";
 import authOptions from "../nextAuth/authOptions";
 
 export const schema = z.object({
-  id: z.string(),
+  userId: z.string(),
 });
 
 const withCurrentUser = (handler: NextApiHandler) => {
@@ -15,7 +15,7 @@ const withCurrentUser = (handler: NextApiHandler) => {
       // Check if the user has access to this user.
       const session = await unstable_getServerSession(req, res, authOptions);
 
-      if (query.id !== session?.user.id) {
+      if (query.userId !== session?.user.id) {
         return res.status(403).end();
       } else {
         const id = session?.user.id;
@@ -26,7 +26,6 @@ const withCurrentUser = (handler: NextApiHandler) => {
       if (error instanceof z.ZodError) {
         return res.status(422).json(error.issues);
       }
-
       return res.status(500).end();
     }
   };
