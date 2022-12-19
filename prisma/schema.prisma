@@ -19,6 +19,7 @@ model User {
   id String @id @default(cuid())
 
   // mandatory user profile
+  // TODO: Should this be changed?
   profile   Profile @relation(fields: [profileId], references: [id])
   profileId String  @unique
 

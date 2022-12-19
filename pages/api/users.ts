@@ -2,9 +2,6 @@ import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 import withAuth from "@/lib-server/middleware/with-auth";
 
-type TGetResponse = TGetNameImage;
-export type TResponse = TGetResponse;
-
 const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
     method,
@@ -29,6 +26,7 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default withAuth(handler);
+export type TResponse = Awaited<ReturnType<typeof getNameImage>>;
 
 const getNameImage = async (id: string) => {
   return {
@@ -38,8 +36,6 @@ const getNameImage = async (id: string) => {
     others: await getOthersNameImage(id),
   };
 };
-
-type TGetNameImage = Awaited<ReturnType<typeof getNameImage>>;
 
 const getFriendsNameImage = async (id: string) => {
   return await prisma.user.findUnique({

@@ -9,10 +9,7 @@ const withAuth = (handler: NextApiHandler) => {
     if (!session) {
       return res.status(403).end();
     } else {
-      req.query = {
-        userId: req.query.userId,
-        currentUserId: session?.user.id,
-      };
+      req.query.currentUserId = session?.user.id;
       return handler(req, res);
     }
   };

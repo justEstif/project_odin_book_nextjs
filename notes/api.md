@@ -98,7 +98,7 @@ api/
 | [X] GET | /users/userId/liked-posts       | get user liked posts using user id                | only get posts if current user matches query id                       |
 | [X] GET | /users/userId/sent-requests     | get user received-requests                        | only get requests if current user matches query id                    |
 | [X] GET | /users/userId/received-requests | get user sent-requests                            | only get requests if current user matches query id                    |
-| [ ] GET | /posts                          | get posts                                         | get posts in relation to current user                                 |
+| [X] GET | /posts                          | get posts                                         | get posts in relation to current user                                 |
 | [ ] GET | /posts/postId                   | get posts, likes and comments count using post id | get the post in relation to the current user                          |
 | [ ] GET | /posts/postId/comments          | get post comment using post id                    | get the post in relation to the current user                          |
 | [ ] GET | /posts/postId/likes             | get post likes using post id                      | get the post in relation to the current user                          |

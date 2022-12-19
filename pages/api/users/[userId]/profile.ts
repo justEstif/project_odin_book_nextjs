@@ -24,7 +24,7 @@ const handler: NextApiHandler = async (req, res) => {
 };
 
 export default withAuth(handler);
-export type TResponse = TGetProfile;
+export type TResponse = Awaited<ReturnType<typeof getProfile>>;
 
 const getProfile = async (id: string) => {
   return await prisma.user.findUnique({
@@ -32,5 +32,3 @@ const getProfile = async (id: string) => {
     select: { profile: true },
   });
 };
-
-type TGetProfile = Awaited<ReturnType<typeof getProfile>>;

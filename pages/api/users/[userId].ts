@@ -2,9 +2,6 @@ import withAuth from "@/lib-server/middleware/with-auth";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 
-type TGetResponse = TGetPostsProfileFriendsCount;
-
-export type TResponse = TGetResponse;
 const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
     query: { userId, currentUserId },
@@ -27,6 +24,7 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default withAuth(handler);
+export type TResponse = Awaited<ReturnType<typeof getPostsProfileFriendsCount>>;
 
 const getPostsProfileFriendsCount = async (
   userId: string,
@@ -63,7 +61,3 @@ const getPostsProfileFriendsCount = async (
       },
     },
   });
-
-type TGetPostsProfileFriendsCount = Awaited<
-  ReturnType<typeof getPostsProfileFriendsCount>
->;

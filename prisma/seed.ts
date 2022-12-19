@@ -77,6 +77,28 @@ const main = async () => {
       friends: {
         connect: { id: user1.id },
       },
+      posts: {
+        create: [
+          {
+            ...getPostAndCommentScalarData(),
+            likes: { connect: [{ id: user1.id }, { id: user2.id }] },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user1.id } },
+                  likes: { connect: { id: user2.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user2.id } },
+                  likes: { connect: { id: user1.id } },
+                },
+              ],
+            },
+          },
+        ],
+      },
     },
   });
 
@@ -90,6 +112,106 @@ const main = async () => {
       sentRequests: {
         connect: [{ id: user3.id }, { id: user4.id }],
       },
+      posts: {
+        create: [
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user3.id } },
+                },
+              ],
+            },
+          },
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user3.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user3.id } },
+                },
+              ],
+            },
+          },
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user2.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user3.id } },
+                },
+              ],
+            },
+          },
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user1.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user2.id } },
+                },
+              ],
+            },
+          },
+        ],
+      },
     },
   });
 
@@ -102,6 +224,106 @@ const main = async () => {
       },
       friends: {
         connect: [{ id: user1.id }, { id: user2.id }, { id: user3.id }],
+      },
+      posts: {
+        create: [
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user5.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user5.id } },
+                },
+              ],
+            },
+          },
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user5.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user5.id } },
+                },
+              ],
+            },
+          },
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user5.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user5.id } },
+                },
+              ],
+            },
+          },
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user5.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user4.id } },
+                  likes: { connect: { id: user5.id } },
+                },
+              ],
+            },
+          },
+        ],
       },
     },
   });
@@ -118,6 +340,36 @@ const main = async () => {
       },
       friends: {
         connect: [{ id: user4.id }, { id: user5.id }, { id: user6.id }],
+      },
+
+      posts: {
+        create: [
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user5.id } },
+                  likes: { connect: { id: user6.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user6.id } },
+                  likes: { connect: { id: user5.id } },
+                },
+              ],
+            },
+          },
+        ],
       },
     },
   });
