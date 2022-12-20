@@ -23,6 +23,10 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
       }
       res.status(403).end();
       break;
+    /**
+     * @description create a post
+     * @access any logged in user
+     */
     case "POST":
       if (typeof currentUserId === "string") {
         const data = await createPost(currentUserId, content);
@@ -31,7 +35,7 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
       res.status(403).end();
       break;
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -40,12 +44,15 @@ export default withValidation(postSchema, withAuth(handler));
 export type TResponse =
   | Awaited<ReturnType<typeof getPosts>>
   | Awaited<ReturnType<typeof createPost>>;
+
 const getPosts = async (currentUserId: string) => {
-  return await prisma.user.findUnique({
-    where: { id: currentUserId },
-    select: {
-      friends: { select: { posts: true } },
-      friendsOf: { select: { posts: true } },
+  return await prisma.post.findMany({
+    orderBy: { createdAt: "desc" },
+    where: {
+      OR: [
+        { user: { friends: { some: { id: currentUserId } } } },
+        { user: { friendsOf: { some: { id: currentUserId } } } },
+      ],
     },
   });
 };
