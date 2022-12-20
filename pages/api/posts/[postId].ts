@@ -34,9 +34,7 @@ const getPost = async (postId: string, currentUserId: string) => {
   return await prisma.post.findUnique({
     where: { id: postId },
     include: {
-      likes: {
-        where: { id: currentUserId },
-      },
+      likes: { where: { id: currentUserId } },
       _count: {
         select: {
           comments: true,

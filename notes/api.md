@@ -110,7 +110,7 @@ api/
 
 | Type     | Route                            | Function                | Auth              |
 | -------- | -------------------------------- | ----------------------- | ----------------- |
-| [ ] POST | /posts                           | create a post           | current user only |
+| [X] POST | /posts                           | create a post           | current user only |
 | [ ] POST | /posts/postId/likes              | like a post             | current user only |
 | [ ] POST | /posts/postId/comments           | comment on a post       | current user only |
 | [ ] POST | /posts/postId/comments/commentId | create a child comment  | current user only |

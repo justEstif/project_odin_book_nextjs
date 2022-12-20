@@ -328,53 +328,51 @@ const main = async () => {
     },
   });
 
-  if (process.env.TESTING_EMAIL) {
-    await prisma.user.create({
-      data: {
-        id: faker.datatype.uuid(),
-        email: process.env.TESTING_EMAIL,
-        emailVerified: faker.date.soon(),
+  await prisma.user.create({
+    data: {
+      id: faker.datatype.uuid(),
+      email: "estifanosgetnet@gmail.com",
+      emailVerified: faker.date.soon(),
 
-        profile: { create: { ...getProfileScalarData() } },
-        sentRequests: {
-          connect: [{ id: user1.id }, { id: user2.id }, { id: user3.id }],
-        },
-        friends: {
-          connect: [{ id: user4.id }, { id: user5.id }, { id: user6.id }],
-        },
-
-        posts: {
-          create: [
-            {
-              ...getPostAndCommentScalarData(),
-              likes: {
-                connect: [
-                  { id: user1.id },
-                  { id: user2.id },
-                  { id: user3.id },
-                  { id: user4.id },
-                ],
-              },
-              comments: {
-                create: [
-                  {
-                    ...getPostAndCommentScalarData(),
-                    user: { connect: { id: user5.id } },
-                    likes: { connect: { id: user6.id } },
-                  },
-                  {
-                    ...getPostAndCommentScalarData(),
-                    user: { connect: { id: user6.id } },
-                    likes: { connect: { id: user5.id } },
-                  },
-                ],
-              },
-            },
-          ],
-        },
+      profile: { create: { ...getProfileScalarData() } },
+      sentRequests: {
+        connect: [{ id: user1.id }, { id: user2.id }, { id: user3.id }],
       },
-    });
-  }
+      friends: {
+        connect: [{ id: user4.id }, { id: user5.id }, { id: user6.id }],
+      },
+
+      posts: {
+        create: [
+          {
+            ...getPostAndCommentScalarData(),
+            likes: {
+              connect: [
+                { id: user1.id },
+                { id: user2.id },
+                { id: user3.id },
+                { id: user4.id },
+              ],
+            },
+            comments: {
+              create: [
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user5.id } },
+                  likes: { connect: { id: user6.id } },
+                },
+                {
+                  ...getPostAndCommentScalarData(),
+                  user: { connect: { id: user6.id } },
+                  likes: { connect: { id: user5.id } },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  });
 };
 
 main()
