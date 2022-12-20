@@ -4,7 +4,10 @@ import prisma from "@/lib-server/prisma";
 import { postSchema } from "@/lib-server/validations/post";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
+  req,
+  res
+) => {
   const {
     method,
     query: { currentUserId },
@@ -41,10 +44,8 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default withValidation(postSchema, withAuth(handler));
-export type TResponse =
-  | Awaited<ReturnType<typeof getPosts>>
-  | Awaited<ReturnType<typeof createPost>>;
 
+export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;
 const getPosts = async (currentUserId: string) => {
   return await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
@@ -57,6 +58,7 @@ const getPosts = async (currentUserId: string) => {
   });
 };
 
+export type TPostResponse = Awaited<ReturnType<typeof createPost>>;
 const createPost = async (currentUserId: string, content: string) => {
   return await prisma.post.create({
     data: {

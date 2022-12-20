@@ -2,7 +2,7 @@ import withAuth from "@/lib-server/middleware/with-auth";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     method,
     query: { postId, currentUserId },
@@ -27,9 +27,9 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default withAuth(handler);
-export type TResponse = Awaited<ReturnType<typeof getPostComments>>;
 
 // TODO: figure out how to work with parentComment and childComments
+export type TGetResponse = Awaited<ReturnType<typeof getPostComments>>;
 const getPostComments = async (postId: string) => {
   return await prisma.post.findUnique({
     where: { id: postId },

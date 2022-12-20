@@ -2,7 +2,7 @@ import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 import withAuth from "@/lib-server/middleware/with-auth";
 
-const handler: NextApiHandler<TResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     method,
     query: { currentUserId },
@@ -26,8 +26,8 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default withAuth(handler);
-export type TResponse = Awaited<ReturnType<typeof getNameImage>>;
 
+export type TGetResponse = Awaited<ReturnType<typeof getNameImage>>;
 const getNameImage = async (currentUserId: string) => {
   return {
     friends: await getFriendsNameImage(currentUserId),

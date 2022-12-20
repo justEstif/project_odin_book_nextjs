@@ -2,7 +2,7 @@ import prisma from "@/lib-server/prisma";
 import withAuth from "@/lib-server/middleware/with-auth";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     query: { userId },
     method,
@@ -28,8 +28,8 @@ const handler: NextApiHandler = async (req, res) => {
 };
 
 export default withAuth(handler);
-export type TResponse = Awaited<ReturnType<typeof getProfile>>;
 
+export type TGetResponse = Awaited<ReturnType<typeof getProfile>>;
 const getProfile = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id },

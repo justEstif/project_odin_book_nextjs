@@ -1,7 +1,7 @@
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     query: { userId },
     method,
@@ -26,8 +26,8 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default handler;
-export type TResponse = Awaited<ReturnType<typeof getFriends>>;
 
+export type TGetResponse = Awaited<ReturnType<typeof getFriends>>;
 const getFriends = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id: id },

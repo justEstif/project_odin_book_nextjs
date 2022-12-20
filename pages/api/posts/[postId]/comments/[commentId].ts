@@ -1,7 +1,7 @@
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     method,
     query: { commentId },
@@ -26,8 +26,8 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default handler;
-export type TResponse = Awaited<ReturnType<typeof getComment>>;
 
+export type TGetResponse = Awaited<ReturnType<typeof getComment>>;
 const getComment = async (commentId: string) => {
   return await prisma.comment.findUnique({
     where: { id: commentId },

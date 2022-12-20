@@ -2,7 +2,7 @@ import withAuth from "@/lib-server/middleware/with-auth";
 import prisma from "@/lib-server/prisma";
 import { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     method,
     query: { userId, currentUserId },
@@ -30,8 +30,8 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 };
 
 export default withAuth(handler);
-export type TResponse = Awaited<ReturnType<typeof getLikedPosts>>;
 
+export type TGetResponse = Awaited<ReturnType<typeof getLikedPosts>>;
 const getLikedPosts = async (currentUserId: string) => {
   return await prisma.user.findUnique({
     where: { id: currentUserId },
