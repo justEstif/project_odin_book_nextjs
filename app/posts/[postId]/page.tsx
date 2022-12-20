@@ -1,7 +1,15 @@
-type Props = {};
+type Props = {
+  params: {
+    postId: string;
+  };
+};
 
-const Page = ({}: Props) => {
-  return <div>second</div>;
+const Page = ({ params }: Props) => {
+  return (
+    <div>
+      <div>{params.postId}</div>
+    </div>
+  );
 };
 
 export default Page;

@@ -1,13 +1,16 @@
 "use client";
 import useSwr from "swr";
-import { TResponse } from "@/api/users";
+import type { TGetResponse } from "@/api/users";
 
 type Props = {};
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const Page = ({ }: Props) => {
+const Page = ({}: Props) => {
   // TODO: how to check if it is an error
-  const { data, error, isLoading } = useSwr<TResponse>("/api/users", fetcher);
+  const { data, error, isLoading } = useSwr<TGetResponse>(
+    "/api/users",
+    fetcher
+  );
 
   if (isLoading) {
     return <div>Page is loading</div>;
