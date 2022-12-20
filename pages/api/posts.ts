@@ -1,11 +1,14 @@
 import withAuth from "@/lib-server/middleware/with-auth";
+import withValidation from "@/lib-server/middleware/with-validation";
 import prisma from "@/lib-server/prisma";
+import { postSchema } from "@/lib-server/validations/post";
 import type { NextApiHandler } from "next";
 
 const handler: NextApiHandler<TResponse> = async (req, res) => {
   const {
     method,
     query: { currentUserId },
+    body: { content },
   } = req;
 
   switch (method) {
@@ -20,21 +23,38 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
       }
       res.status(403).end();
       break;
+    case "POST":
+      if (typeof currentUserId === "string") {
+        const data = await createPost(currentUserId, content);
+        res.status(200).json(data);
+      }
+      res.status(403).end();
+      break;
     default:
       res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withAuth(handler);
-export type TResponse = Awaited<ReturnType<typeof getPosts>>;
-
+export default withValidation(postSchema, withAuth(handler));
+export type TResponse =
+  | Awaited<ReturnType<typeof getPosts>>
+  | Awaited<ReturnType<typeof createPost>>;
 const getPosts = async (currentUserId: string) => {
   return await prisma.user.findUnique({
     where: { id: currentUserId },
     select: {
       friends: { select: { posts: true } },
       friendsOf: { select: { posts: true } },
+    },
+  });
+};
+
+const createPost = async (currentUserId: string, content: string) => {
+  return await prisma.post.create({
+    data: {
+      content: content,
+      user: { connect: { id: currentUserId } },
     },
   });
 };
