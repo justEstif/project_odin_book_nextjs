@@ -88,17 +88,32 @@ api/
 
 # RESTFul API
 
-| Type    | Route                           | Function                                          | Auth                                                                  |
-| ------- | ------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------- |
-| [X] GET | /users                          | get all users                                     | get the users in relation to the current user; don't get current user |
-| [X] GET | /users/userId                   | get user using user id                            | get the users in relation to the current user                         |
-| [X] GET | /users/userId/profile           | get user profile using user id                    | get the users in relation to the current user                         |
-| [X] GET | /users/userId/posts             | get user posts using user id                      | get the users in relation to the current user                         |
-| [X] GET | /users/userId/friends           | get user friends using user id                    | get the users in relation to the current user                         |
-| [X] GET | /users/userId/liked-posts       | get user liked posts using user id                | only get posts if current user matches query id                       |
-| [X] GET | /users/userId/sent-requests     | get user received-requests                        | only get requests if current user matches query id                    |
-| [X] GET | /users/userId/received-requests | get user sent-requests                            | only get requests if current user matches query id                    |
-| [X] GET | /posts                          | get posts                                         | get posts in relation to current user                                 |
-| [ ] GET | /posts/postId                   | get posts, likes and comments count using post id | get the post in relation to the current user                          |
-| [ ] GET | /posts/postId/comments          | get post comment using post id                    | get the post in relation to the current user                          |
-| [ ] GET | /posts/postId/likes             | get post likes using post id                      | get the post in relation to the current user                          |
+## GET Requests
+
+| Type    | Route                            | Function                                          | Auth                                                                  |
+| ------- | -------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------- |
+| [X] GET | /users                           | get all users                                     | get the users in relation to the current user; don't get current user |
+| [X] GET | /users/userId                    | get user using user id                            | get the users in relation to the current user                         |
+| [X] GET | /users/userId/profile            | get user profile using user id                    | get the users in relation to the current user                         |
+| [X] GET | /users/userId/friends            | get user friends using user id                    | get the users in relation to the current user                         |
+| [X] GET | /users/userId/liked-posts        | get user liked posts using user id                | only get posts if current user matches query id                       |
+| [X] GET | /users/userId/sent-requests      | get user received-requests                        | only get requests if current user matches query id                    |
+| [X] GET | /users/userId/received-requests  | get user sent-requests                            | only get requests if current user matches query id                    |
+| [X] GET | /users/userId/posts              | get user posts using user id                      | get the users in relation to the current user                         |
+| [X] GET | /posts                           | get posts                                         | get posts in relation to current user                                 |
+| [X] GET | /posts/postId                    | get posts, likes and comments count using post id | all                                                                   |
+| [X] GET | /posts/postId/likes              | get post likes using post id                      | get                                                                   |
+| [X] GET | /posts/postId/comments           | get all the comments of a post                    | all                                                                   |
+| [ ] GET | /posts/postId/comments/commentId | get a comment of a post                           | all                                                                   |
+
+## POST Requests
+
+| Type     | Route                            | Function                | Auth              |
+| -------- | -------------------------------- | ----------------------- | ----------------- |
+| [ ] POST | /posts                           | create a post           | current user only |
+| [ ] POST | /posts/postId/likes              | like a post             | current user only |
+| [ ] POST | /posts/postId/comments           | comment on a post       | current user only |
+| [ ] POST | /posts/postId/comments/commentId | create a child comment  | current user only |
+| [ ] POST | /users/userId/sent-requests      | send a friend request   | current user only |
+| [ ] POST | /users/userId/received-requests  | accept a friend request | current user only |
+| [ ] POST | /users/userId/profile            | update profile          | current user only |
