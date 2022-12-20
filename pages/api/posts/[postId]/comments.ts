@@ -29,12 +29,18 @@ const handler: NextApiHandler<TResponse> = async (req, res) => {
 export default withAuth(handler);
 export type TResponse = Awaited<ReturnType<typeof getPostComments>>;
 
+// TODO: figure out how to work with parentComment and childComments
 const getPostComments = async (postId: string) => {
   return await prisma.post.findUnique({
     where: { id: postId },
     select: {
       id: true,
-      comments: true,
+      comments: {
+        include: {
+          parentComment: { select: { id: true } },
+          childComments: { select: { id: true } },
+        },
+      },
     },
   });
 };
