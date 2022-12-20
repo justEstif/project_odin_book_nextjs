@@ -7,16 +7,22 @@ const withValidation = <T extends ZodSchema>(
   handler: NextApiHandler
 ) => {
   const middleware: NextApiHandler = async (req, res) => {
-    try {
-      const body = req.body ? req.body : {};
-      console.log(body);
-      await schema.parse(body);
-      return handler(req, res);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(422).json(error.issues);
-      }
-      return res.status(422).end();
+    const { method } = req;
+
+    switch (method) {
+      case "POST":
+        try {
+          const body = req.body ? req.body : {};
+          await schema.parse(body);
+          return handler(req, res);
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            return res.status(422).json(error.issues);
+          }
+          return res.status(422).end();
+        }
+      default:
+        return handler(req, res);
     }
   };
   return middleware;
