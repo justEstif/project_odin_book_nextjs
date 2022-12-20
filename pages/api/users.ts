@@ -37,67 +37,59 @@ const getNameImage = async (currentUserId: string) => {
   };
 };
 
-const getFriendsNameImage = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id },
-    select: {
-      friends: {
-        select: {
-          id: true,
-          profile: { select: { name: true, image: true } },
-        },
-      },
-
-      friendsOf: {
-        select: {
-          id: true,
-          profile: { select: { name: true, image: true } },
-        },
-      },
-    },
-  });
-};
-
-const getSentRequestsNameImage = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id: id },
-    select: {
-      sentRequests: {
-        select: {
-          id: true,
-          profile: { select: { name: true, image: true } },
-        },
-      },
-    },
-  });
-};
-
-const getReceivedRequestsNameImage = async (id: string) => {
-  return await prisma.user.findUnique({
-    where: { id: id },
-    select: {
-      receivedRequests: {
-        select: {
-          id: true,
-          profile: { select: { name: true, image: true } },
-        },
-      },
-    },
-  });
-};
-
-const getOthersNameImage = async (id: string) => {
-  return await prisma.user.findMany({
+const getFriendsNameImage = async (currentUserId: string) => {
+  return await prisma.profile.findMany({
     where: {
-      sentRequests: { none: { id } },
-      receivedRequests: { none: { id } },
-      friendsOf: { none: { id } },
-      friends: { none: { id } },
-      NOT: { id },
+      OR: [
+        { user: { friends: { some: { id: currentUserId } } } },
+        { user: { friendsOf: { some: { id: currentUserId } } } },
+      ],
     },
     select: {
-      id: true,
-      profile: { select: { name: true, image: true } },
+      name: true,
+      image: true,
+      user: { select: { id: true } },
+    },
+  });
+};
+
+const getSentRequestsNameImage = async (currentUserId: string) => {
+  return await prisma.profile.findMany({
+    where: { user: { sentRequests: { some: { id: currentUserId } } } },
+    select: {
+      name: true,
+      image: true,
+      user: { select: { id: true } },
+    },
+  });
+};
+
+const getReceivedRequestsNameImage = async (currentUserId: string) => {
+  return await prisma.profile.findMany({
+    where: { user: { receivedRequests: { some: { id: currentUserId } } } },
+    select: {
+      name: true,
+      image: true,
+      user: { select: { id: true } },
+    },
+  });
+};
+
+const getOthersNameImage = async (currentUserId: string) => {
+  return await prisma.profile.findMany({
+    where: {
+      NOT: [
+        { user: { friends: { some: { id: currentUserId } } } },
+        { user: { friendsOf: { some: { id: currentUserId } } } },
+        { user: { sentRequests: { some: { id: currentUserId } } } },
+        { user: { receivedRequests: { some: { id: currentUserId } } } },
+        { user: { id: currentUserId } },
+      ],
+    },
+    select: {
+      name: true,
+      image: true,
+      user: { select: { id: true } },
     },
   });
 };
