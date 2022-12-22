@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const envSchema = z.object({
+  BASE_FETCH_URL: z.string(),
   NODE_ENV: z.string(),
   // db
   DATABASE_URL: z.string(),
@@ -25,7 +26,7 @@ const envParse = envSchema.safeParse(process.env);
 
 if (!envParse.success) {
   console.error(JSON.stringify(envParse.error.format(), null, 4));
-  process.exit(1);
+  process.exit?.(1);
 }
 
 const env = envParse.data;
