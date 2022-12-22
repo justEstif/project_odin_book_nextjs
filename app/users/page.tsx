@@ -5,7 +5,7 @@ import type { TGetResponse } from "@/api/users";
 type Props = {};
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const Page = ({}: Props) => {
+const Page = ({ }: Props) => {
   // TODO: how to check if it is an error
   const { data, error, isLoading } = useSwr<TGetResponse>(
     "/api/users",
@@ -23,7 +23,6 @@ const Page = ({}: Props) => {
     return <div>Page has error</div>;
   }
 
-  console.log(data);
   // TODO: use loading file
   // create client side components but make the page server side
   return (

@@ -15,7 +15,6 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
      */
     case "GET":
       if (typeof postId === "string" && typeof currentUserId === "string") {
-        // TODO: make sure this includes likes count, if current user liked, comments count
         const data = await getPost(postId, currentUserId);
         res.status(200).json(data);
       }
