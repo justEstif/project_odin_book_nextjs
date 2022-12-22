@@ -47,7 +47,6 @@ const getPostLikes = async ({ postId }: { postId: string }) => {
   return await prisma.post.findUnique({
     where: { id: postId },
     select: {
-      id: true,
       likes: {
         select: {
           id: true,
