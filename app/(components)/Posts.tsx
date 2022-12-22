@@ -3,10 +3,9 @@ import type { TGetResponse } from "@/api/posts";
 import useSwr from "swr";
 import { nanoid } from "nanoid";
 import Link from "next/link";
+import { fetcher } from "@/lib-client/swr/fetcher";
 
 type Props = {};
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Posts = ({}: Props) => {
   const {

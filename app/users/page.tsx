@@ -1,9 +1,9 @@
 "use client";
 import useSwr from "swr";
 import type { TGetResponse } from "@/api/users";
+import { fetcher } from "@/lib-client/swr/fetcher";
 
 type Props = {};
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Page = ({ }: Props) => {
   // TODO: how to check if it is an error
