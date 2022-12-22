@@ -5,7 +5,7 @@ import { postSchema, TPostSchema } from "@/lib-server/validations/post";
 
 type Props = {};
 
-const PostForm = ({ }: Props) => {
+const PostForm = ({}: Props) => {
   const {
     register,
     handleSubmit,
@@ -31,6 +31,7 @@ const PostForm = ({ }: Props) => {
 
   return (
     <div>
+      <h3>Create a post</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label>
           Content

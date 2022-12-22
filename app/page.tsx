@@ -1,16 +1,18 @@
-"use client";
-import { useSession } from "next-auth/react";
+import PostForm from "./(components)/PostForm";
+import Posts from "./(components)/Posts";
 
 type Props = {};
 
 const Page = ({}: Props) => {
-  const { data: session } = useSession();
-  const user = session?.user;
   return (
     <div>
-      <div>Home Page</div>
-      <div>{user?.name}</div>
-      <div>{user?.id}</div>
+      <div>
+        <h4>Create a post</h4>
+        <PostForm />
+      </div>
+      <div>
+        <Posts />
+      </div>
     </div>
   );
 };
