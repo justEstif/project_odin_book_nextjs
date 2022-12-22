@@ -55,6 +55,14 @@ const getPosts = async (currentUserId: string) => {
         { user: { friendsOf: { some: { id: currentUserId } } } },
       ],
     },
+    include: {
+      user: {
+        select: {
+          id: true,
+          profile: { select: { name: true, image: true, id: true } },
+        },
+      },
+    },
   });
 };
 
