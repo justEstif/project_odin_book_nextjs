@@ -8,8 +8,8 @@ I was trying to set up NextAuth with the Email provider for passwordless auth. I
 
 # TODO:
 
-[ ] test create comment: POST /api/posts/postId/comments
+- [x] test create comment: POST /api/posts/postId/comments
 
 - the useSWR hook needs to update the post on each like
 - need to figure this out
-  [ ] test create child comment: POST /api/posts/postId/comments/commentId
+- [x] test create child comment: POST /api/posts/postId/comments/commentId

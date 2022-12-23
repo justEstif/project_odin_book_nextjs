@@ -108,12 +108,22 @@ api/
 
 ## POST Requests
 
-| Type     | Route                            | Function                | Auth              |
-| -------- | -------------------------------- | ----------------------- | ----------------- |
-| [X] POST | /posts                           | create a post           | current user only |
-| [X] POST | /posts/postId/likes              | like a post             | current user only |
-| [X] POST | /posts/postId/comments           | comment on a post       | current user only |
-| [X] POST | /posts/postId/comments/commentId | create a child comment  | current user only |
-| [ ] POST | /users/userId/sent-requests      | send a friend request   | current user only |
-| [ ] POST | /users/userId/received-requests  | accept a friend request | current user only |
-| [ ] POST | /users/userId/profile            | update profile          | current user only |
+| Type       | Route                            | Function                   | Auth              |
+| ---------- | -------------------------------- | -------------------------- | ----------------- |
+| [X] POST   | /posts                           | create a post              | current user only |
+| [X] POST   | /posts/postId/likes              | like a post                | current user only |
+| [X] POST   | /posts/postId/comments           | comment on a post          | current user only |
+| [X] POST   | /posts/postId/comments/commentId | create a child comment     | current user only |
+| [ ] POST   | /users/userId/sent-requests      | send a friend request      | current user only |
+| [ ] POST   | /users/userId/received-requests  | accept a friend request    | current user only |
+| [ ] DELETE | /users/userId/received-requests  | cancel a friend request    | current user only |
+| [ ] DELETE | /users/userId/sent-requests      | cancel a sent request      | current user only |
+| [ ] DELETE | /users/userId/sent-requests      | cancel a sent request      | current user only |
+| [ ] DELETE | /users/userId/friends            | delete a friend            | current user only |
+| [ ] POST   | /users/userId/profile            | update profile             | current user only |
+| [ ] DELETE | /users/userId                    | delete user                | current user only |
+| [ ] DELETE | /users/userId/profile            | delete profile fields user | current user only |
+| [ ] DELETE | /posts/postId                    | delete post                | current user only |
+| [ ] UPDATE | /posts/postId                    | update post                | current user only |
+| [ ] DELETE | /posts/postId/comments/commentId | delete a comment           | current user only |
+| [ ] UPDATE | /posts/postId/comments/commentId | update a comment           | current user only |
