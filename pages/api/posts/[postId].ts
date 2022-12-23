@@ -20,6 +20,8 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
       }
       res.status(403).end();
       break;
+    // TODO delete post request handler
+    // TODO update post request handler
     default:
       res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);

@@ -44,6 +44,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
+    // TODO handle deleting profile field
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);

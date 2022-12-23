@@ -51,7 +51,6 @@ const getPostLikes = async ({ postId }: { postId: string }) => {
         select: {
           id: true,
           profile: { select: { name: true, image: true } },
-          // TODO: add friend status?
         },
       },
     },

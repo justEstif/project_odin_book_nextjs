@@ -19,6 +19,7 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
       }
       res.status(403).end();
       break;
+    // TODO unfriend post request handler
     default:
       res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);

@@ -58,6 +58,8 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
         message: "Invalid id",
       });
       break;
+    // TODO: handle delete commment
+    // TODO: handle update commment
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end({

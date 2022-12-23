@@ -38,7 +38,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
-
+    // TODO delete sent request
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
