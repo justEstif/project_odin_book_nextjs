@@ -24,12 +24,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
         const data = await getComment(commentId);
         res.status(200).json(data);
       }
-      res.status(403).end({
-        payload: {
-          commentId,
-        },
-        message: "Invalid id",
-      });
+      res.status(403).end();
       break;
     /**
      * @description create a child comment
@@ -49,23 +44,13 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
         });
         res.status(200).json(data);
       }
-      res.status(403).end({
-        payload: {
-          commentId,
-          currentUserId,
-          postId,
-        },
-        message: "Invalid id",
-      });
+      res.status(403).end();
       break;
     // TODO: handle delete commment
     // TODO: handle update commment
     default:
       res.setHeader("Allow", ["GET", "POST"]);
-      res.status(405).end({
-        payload: { method },
-        message: "Invalid method",
-      });
+      res.status(403).end();
   }
 };
 
