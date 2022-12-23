@@ -10,9 +10,10 @@ type Props = {
   postId: string;
   trigger: Function;
   mutate: Function;
+  commentId?: string;
 };
 
-const CommentForm = ({ postId, trigger, mutate }: Props) => {
+const CommentForm = ({ postId, commentId, trigger, mutate }: Props) => {
   const {
     register,
     handleSubmit,
@@ -24,7 +25,10 @@ const CommentForm = ({ postId, trigger, mutate }: Props) => {
 
   const onSubmit: SubmitHandler<TCommentSchema> = async (data) => {
     try {
-      const res = await fetch(`/api/posts/${postId}/comments`, {
+      const url = commentId
+        ? `/api/posts/${postId}/comments/${commentId}`
+        : `/api/posts/${postId}/comments`;
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

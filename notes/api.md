@@ -111,9 +111,9 @@ api/
 | Type     | Route                            | Function                | Auth              |
 | -------- | -------------------------------- | ----------------------- | ----------------- |
 | [X] POST | /posts                           | create a post           | current user only |
-| [ ] POST | /posts/postId/likes              | like a post             | current user only |
-| [ ] POST | /posts/postId/comments           | comment on a post       | current user only |
-| [ ] POST | /posts/postId/comments/commentId | create a child comment  | current user only |
+| [X] POST | /posts/postId/likes              | like a post             | current user only |
+| [X] POST | /posts/postId/comments           | comment on a post       | current user only |
+| [X] POST | /posts/postId/comments/commentId | create a child comment  | current user only |
 | [ ] POST | /users/userId/sent-requests      | send a friend request   | current user only |
 | [ ] POST | /users/userId/received-requests  | accept a friend request | current user only |
 | [ ] POST | /users/userId/profile            | update profile          | current user only |

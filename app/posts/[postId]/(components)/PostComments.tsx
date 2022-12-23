@@ -26,7 +26,16 @@ const PostComments = ({ postCommentsCount, postId, mutate }: Props) => {
           {postCommentsCount} comments
         </button>
         {comments?.comments.map((comment) => (
-          <div key={nanoid()}>{comment.content}</div>
+          <div key={nanoid()}>
+            {/* TODO: add child comment */}
+            <p>{comment.content}</p>
+            <CommentForm
+              commentId={comment.id}
+              postId={postId}
+              trigger={trigger}
+              mutate={mutate}
+            />
+          </div>
         ))}
       </div>
     );
