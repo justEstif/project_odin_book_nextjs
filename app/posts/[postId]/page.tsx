@@ -8,7 +8,6 @@ type Props = {
 };
 
 const Page = async ({ params: { postId } }: Props) => {
-  // like count and current user like, content, comments
   return <Post postId={postId} />;
 };
 

@@ -13,6 +13,7 @@ type Props = {
 
 const Post = ({ postId }: Props) => {
   const [userLike, setUserLike] = useState(false);
+  const [postCommentCount, setPostCommentCount] = useState(0);
   const {
     data: post,
     error,
@@ -21,6 +22,7 @@ const Post = ({ postId }: Props) => {
   } = useSWR<TGetResponse>(`/api/posts/${postId}`, fetcher);
 
   useEffect(() => {
+    setPostCommentCount(post?._count.comments || 0);
     post?.likes.map((like) => like.id).length
       ? setUserLike(true)
       : setUserLike(false);
@@ -35,8 +37,12 @@ const Post = ({ postId }: Props) => {
   return (
     <div>
       <PostContent postContent={post?.content} />
-      <PostComments postCommentsCount={post?._count.comments} />
       <PostLikeBtn postId={postId} mutate={mutate} userLike={userLike} />
+      <PostComments
+        postId={postId}
+        mutate={mutate}
+        postCommentsCount={postCommentCount}
+      />
     </div>
   );
 };
