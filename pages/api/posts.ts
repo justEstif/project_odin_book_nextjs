@@ -1,17 +1,11 @@
 import withAuth from "@/lib-server/middleware/with-auth";
-import withValidation from "@/lib-server/middleware/with-validation";
 import prisma from "@/lib-server/prisma";
-import { postSchema } from "@/lib-server/validations/post";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
-  req,
-  res
-) => {
+const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const {
     method,
     query: { currentUserId },
-    body: { content },
   } = req;
 
   switch (method) {
@@ -26,24 +20,13 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
-    /**
-     * @description create a post
-     * @access any logged in user
-     */
-    case "POST":
-      if (typeof currentUserId === "string") {
-        const data = await createPost(currentUserId, content);
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withValidation(postSchema, withAuth(handler));
+export default withAuth(handler);
 
 export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;
 const getPosts = async (currentUserId: string) => {
@@ -59,19 +42,9 @@ const getPosts = async (currentUserId: string) => {
       user: {
         select: {
           id: true,
-          profile: { select: { name: true, image: true, id: true } },
+          profile: { select: { name: true, image: true } },
         },
       },
-    },
-  });
-};
-
-export type TPostResponse = Awaited<ReturnType<typeof createPost>>;
-const createPost = async (currentUserId: string, content: string) => {
-  return await prisma.post.create({
-    data: {
-      content: content,
-      user: { connect: { id: currentUserId } },
     },
   });
 };

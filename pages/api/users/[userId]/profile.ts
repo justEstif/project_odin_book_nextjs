@@ -14,6 +14,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   const {
     query: { userId, currentUserId },
     method,
+    body,
   } = req;
 
   switch (method) {
@@ -38,7 +39,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
         typeof currentUserId === "string" &&
         userId === currentUserId
       ) {
-        const profileBody = req.body as TProfileSchema;
+        const profileBody = body as TProfileSchema;
         const data = await updateProfile({ currentUserId, profileBody });
         res.status(200).json(data);
       }
