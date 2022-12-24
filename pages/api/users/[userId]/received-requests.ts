@@ -51,7 +51,14 @@ export type TGetResponse = Awaited<ReturnType<typeof getReceivedRequests>>;
 const getReceivedRequests = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id },
-    select: { receivedRequests: true },
+    select: {
+      receivedRequests: {
+        select: {
+          id: true,
+          profile: { select: { name: true, image: true } },
+        },
+      },
+    },
   });
 };
 

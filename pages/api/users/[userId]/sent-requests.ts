@@ -22,7 +22,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
         typeof currentUserId === "string" &&
         userId === currentUserId
       ) {
-        const data = await getSentRequests(userId);
+        const data = await getSentRequests({ currentUserId });
         res.status(200).json(data);
       }
       res.status(403).end();
@@ -48,10 +48,21 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
 export default withAuth(handler);
 
 export type TGetResponse = Awaited<ReturnType<typeof getSentRequests>>;
-const getSentRequests = async (id: string) => {
+const getSentRequests = async ({
+  currentUserId,
+}: {
+  currentUserId: string;
+}) => {
   return await prisma.user.findUnique({
-    where: { id },
-    select: { sentRequests: true },
+    where: { id: currentUserId },
+    select: {
+      sentRequests: {
+        select: {
+          id: true,
+          profile: { select: { name: true, image: true } },
+        },
+      },
+    },
   });
 };
 
