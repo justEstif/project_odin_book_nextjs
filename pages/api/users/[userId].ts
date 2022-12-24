@@ -15,7 +15,10 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
      */
     case "GET":
       if (typeof userId === "string" && typeof currentUserId === "string") {
-        const data = await getPostsProfileFriendsCount(userId, currentUserId);
+        const data = await getPostsProfileFriendsCount({
+          userId,
+          currentUserId,
+        });
         res.status(200).json(data);
       }
       res.status(403).end();
@@ -32,15 +35,17 @@ export default withAuth(handler);
 export type TGetResponse = Awaited<
   ReturnType<typeof getPostsProfileFriendsCount>
 >;
-const getPostsProfileFriendsCount = async (
-  userId: string,
-  currentUserId: string
-) =>
+const getPostsProfileFriendsCount = async ({
+  userId,
+  currentUserId,
+}: {
+  userId: string;
+  currentUserId: string;
+}) =>
   await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
+    where: { id: userId },
     select: {
+      id: true,
       posts: true,
       profile: true,
       friends: {
