@@ -21,7 +21,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
      */
     case "GET":
       if (typeof userId === "string") {
-        const data = await getPosts(userId);
+        const data = await getPosts({ userId });
         res.status(200).json(data);
       }
       res.status(403).end();
@@ -38,13 +38,13 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       ) {
         const postBody = body as TPostSchema;
         const data = await createPost({ currentUserId, postBody });
-        res.status(200).json(data);
+        res.status(201).json(data);
       }
       res.status(403).end();
       break;
 
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -52,9 +52,9 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
 export default withValidation(postSchema, withAuth(handler));
 
 export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;
-const getPosts = async (id: string) => {
+const getPosts = async ({ userId }: { userId: string }) => {
   return await prisma.post.findMany({
-    where: { userId: id },
+    where: { user: { id: userId } },
   });
 };
 

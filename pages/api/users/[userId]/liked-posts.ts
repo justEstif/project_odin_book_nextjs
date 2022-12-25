@@ -18,7 +18,7 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
         typeof currentUserId === "string" &&
         userId === currentUserId
       ) {
-        const data = await getLikedPosts(currentUserId);
+        const data = await getLikedPosts({ currentUserId });
         res.status(200).json(data);
       }
       res.status(403).end();
@@ -32,7 +32,7 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
 export default withAuth(handler);
 
 export type TGetResponse = Awaited<ReturnType<typeof getLikedPosts>>;
-const getLikedPosts = async (currentUserId: string) => {
+const getLikedPosts = async ({ currentUserId }: { currentUserId: string }) => {
   return await prisma.user.findUnique({
     where: { id: currentUserId },
     select: { likedPosts: true },
