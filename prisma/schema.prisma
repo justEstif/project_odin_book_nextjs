@@ -12,7 +12,7 @@ model Profile {
   name  String @default("")
   image String @default("")
   bio   String @default("")
-  user  User?
+  user  User[]
 }
 
 model User {
@@ -20,8 +20,8 @@ model User {
 
   // mandatory user profile
   // TODO: Should this be changed?
-  profile   Profile @relation(fields: [profileId], references: [id])
-  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
 
   // auth
   email         String    @unique
