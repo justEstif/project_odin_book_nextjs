@@ -14,12 +14,11 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
      */
     case "GET":
       if (typeof userId === "string") {
-        const friends = await getFriends(userId);
+        const friends = await getFriends({ userId });
         res.status(200).json(friends);
       }
       res.status(403).end();
       break;
-    // TODO unfriend post request handler
     default:
       res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
@@ -29,9 +28,16 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
 export default handler;
 
 export type TGetResponse = Awaited<ReturnType<typeof getFriends>>;
-const getFriends = async (id: string) => {
+const getFriends = async ({ userId }: { userId: string }) => {
   return await prisma.user.findUnique({
-    where: { id: id },
-    select: { friends: true, friendsOf: true },
+    where: { id: userId },
+    select: {
+      friends: {
+        select: { id: true, profile: { select: { name: true, image: true } } },
+      },
+      friendsOf: {
+        select: { id: true, profile: { select: { name: true, image: true } } },
+      },
+    },
   });
 };

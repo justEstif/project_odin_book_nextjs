@@ -30,58 +30,56 @@ export default withAuth(handler);
 export type TGetResponse = Awaited<ReturnType<typeof getNameImage>>;
 const getNameImage = async (currentUserId: string) => {
   const getFriendsNameImage = async (currentUserId: string) => {
-    return await prisma.profile.findMany({
+    return await prisma.user.findMany({
       where: {
         OR: [
-          { user: { friends: { some: { id: currentUserId } } } },
-          { user: { friendsOf: { some: { id: currentUserId } } } },
+          { friends: { some: { id: currentUserId } } },
+          { friendsOf: { some: { id: currentUserId } } },
         ],
       },
       select: {
-        name: true,
-        image: true,
-        user: { select: { id: true } },
+        id: true,
+        profile: { select: { name: true, image: true } },
       },
     });
   };
 
   const getSentRequestsNameImage = async (currentUserId: string) => {
-    return await prisma.profile.findMany({
-      where: { user: { sentRequests: { some: { id: currentUserId } } } },
+    return await prisma.user.findMany({
+      where: { sentRequests: { some: { id: currentUserId } } },
       select: {
-        name: true,
-        image: true,
-        user: { select: { id: true } },
+        id: true,
+        profile: { select: { name: true, image: true } },
       },
     });
   };
 
   const getReceivedRequestsNameImage = async (currentUserId: string) => {
-    return await prisma.profile.findMany({
-      where: { user: { receivedRequests: { some: { id: currentUserId } } } },
+    return await prisma.user.findMany({
+      where: { receivedRequests: { some: { id: currentUserId } } },
       select: {
-        name: true,
-        image: true,
-        user: { select: { id: true } },
+        id: true,
+        profile: { select: { name: true, image: true } },
       },
     });
   };
 
   const getOthersNameImage = async (currentUserId: string) => {
-    return await prisma.profile.findMany({
+    return await prisma.user.findMany({
       where: {
         NOT: [
-          { user: { friends: { some: { id: currentUserId } } } },
-          { user: { friendsOf: { some: { id: currentUserId } } } },
-          { user: { sentRequests: { some: { id: currentUserId } } } },
-          { user: { receivedRequests: { some: { id: currentUserId } } } },
-          { user: { id: currentUserId } },
+          { friends: { some: { id: currentUserId } } },
+          { friendsOf: { some: { id: currentUserId } } },
+          { sentRequests: { some: { id: currentUserId } } },
+          { receivedRequests: { some: { id: currentUserId } } },
+          { id: currentUserId },
         ],
       },
       select: {
-        name: true,
-        image: true,
-        user: { select: { id: true } },
+        id: true,
+        profile: {
+          select: { name: true, image: true },
+        },
       },
     });
   };
