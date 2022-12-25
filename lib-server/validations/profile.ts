@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-export const profileSchema = z.object({
+export const updateProfileSchema = z.object({
   name: z.string().min(3).optional(),
   bio: z.string().min(3).optional(),
   image: z.string().url().optional(),
 });
 
-export type TProfileSchema = z.infer<typeof profileSchema>;
+export type TUpdateProfileSchema = z.infer<typeof updateProfileSchema>;

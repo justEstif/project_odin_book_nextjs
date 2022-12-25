@@ -3,8 +3,8 @@ import prisma from "@/lib-server/prisma";
 import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
 import {
-  profileSchema,
-  TProfileSchema,
+  updateProfileSchema,
+  TUpdateProfileSchema,
 } from "@/lib-server/validations/profile";
 
 const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
@@ -32,6 +32,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
     /**
      * @description update profile
      * @access any logged in user
+     * @todo test this route
      */
     case "POST":
       if (
@@ -39,7 +40,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
         typeof currentUserId === "string" &&
         userId === currentUserId
       ) {
-        const profileBody = body as TProfileSchema;
+        const profileBody = body as TUpdateProfileSchema;
         const data = await updateProfile({ currentUserId, profileBody });
         res.status(200).json(data);
       }
@@ -51,7 +52,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   }
 };
 
-export default withValidation(profileSchema, withAuth(handler));
+export default withValidation(updateProfileSchema, withAuth(handler));
 
 export type TGetResponse = Awaited<ReturnType<typeof getProfile>>;
 const getProfile = async (id: string) => {
@@ -67,7 +68,7 @@ const updateProfile = async ({
   profileBody,
 }: {
   currentUserId: string;
-  profileBody: TProfileSchema;
+  profileBody: TUpdateProfileSchema;
 }) => {
   return await prisma.user.update({
     where: { id: currentUserId },

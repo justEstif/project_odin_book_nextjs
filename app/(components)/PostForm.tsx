@@ -1,7 +1,7 @@
 "use client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { postSchema, TPostSchema } from "@/lib-server/validations/post";
+import { postSchema, TUpdatePostSchema } from "@/lib-server/validations/post";
 
 type Props = {};
 
@@ -10,11 +10,11 @@ const PostForm = ({}: Props) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TPostSchema>({
+  } = useForm<TUpdatePostSchema>({
     resolver: zodResolver(postSchema),
   });
 
-  const onSubmit: SubmitHandler<TPostSchema> = async (data) => {
+  const onSubmit: SubmitHandler<TUpdatePostSchema> = async (data) => {
     try {
       const res = await fetch("/api/posts", {
         method: "POST",
