@@ -29,6 +29,7 @@ const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
     /**
      * @description delete the user
      * @access any logged in user
+     * @todo test this route
      */
     case "DELETE":
       if (

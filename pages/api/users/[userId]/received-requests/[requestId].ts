@@ -25,6 +25,11 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
       }
       res.status(403).end();
       break;
+    /**
+     * @description delete/deny friend request
+     * @access user
+     * @todo test route
+     */
     case "DELETE":
       if (
         typeof userId === "string" &&

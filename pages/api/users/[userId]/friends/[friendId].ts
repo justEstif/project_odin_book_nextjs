@@ -12,6 +12,7 @@ const handler: NextApiHandler<TDeleteResponse> = async (req, res) => {
     /**
      * @description send a friend request
      * @access any logged in user
+     * @todo test
      */
     case "DELETE":
       if (

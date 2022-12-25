@@ -12,6 +12,7 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
     /**
      * @description send a friend request
      * @access any logged in user
+     * @todo test route
      */
     case "POST":
       if (
@@ -28,6 +29,7 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
     /**
      * @description delete a sent friend request
      * @access any logged in user
+     * @todo test route
      */
     case "DELETE":
       if (
