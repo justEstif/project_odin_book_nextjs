@@ -1,13 +1,15 @@
 import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
-import { commentSchema } from "@/lib-server/validations/comment";
+import {
+  commentSchema,
+  TUpdateCommentSchema,
+} from "@/lib-server/validations/comment";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
-  req,
-  res
-) => {
+const handler: NextApiHandler<
+  TGetResponse | TPostResponse | TDeleteResponse
+> = async (req, res) => {
   const {
     method,
     query: { postId, commentId, currentUserId },
@@ -46,10 +48,33 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
-    // TODO: handle delete commment
     // TODO: handle update commment
+    case "PUT":
+      if (typeof commentId == "string" && typeof currentUserId === "string") {
+        const commentBody = req.body as TUpdateCommentSchema;
+        const data = await updateComment({
+          currentUserId,
+          commentId,
+          commentBody,
+        });
+        res.status(200).json(data);
+      }
+      res.status(403).end();
+      break;
+
+    /**
+     * @description delete comment
+     * @todo test
+     */
+    case "DELETE":
+      if (typeof commentId == "string" && typeof currentUserId === "string") {
+        const data = await deleteComment({ currentUserId, commentId });
+        res.status(200).json(data);
+      }
+      res.status(403).end();
+      break;
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
       res.status(403).end();
   }
 };
@@ -82,5 +107,44 @@ const createChildComment = async ({
       user: { connect: { id: currentUserId } },
       post: { connect: { id: postId } },
     },
+  });
+};
+
+export type TPutResponse = Awaited<ReturnType<typeof updateComment>>;
+const updateComment = async ({
+  commentId,
+  currentUserId,
+  commentBody,
+}: {
+  commentId: string;
+  currentUserId: string;
+  commentBody: TUpdateCommentSchema;
+}) => {
+  return await prisma.user.update({
+    where: { id: currentUserId },
+    data: {
+      comments: {
+        update: {
+          where: { id: commentId },
+          data: {
+            ...(commentBody.content && { content: commentBody.content }),
+          },
+        },
+      },
+    },
+  });
+};
+
+export type TDeleteResponse = Awaited<ReturnType<typeof deleteComment>>;
+const deleteComment = async ({
+  commentId,
+  currentUserId,
+}: {
+  commentId: string;
+  currentUserId: string;
+}) => {
+  return await prisma.user.update({
+    where: { id: currentUserId },
+    data: { comments: { delete: { id: commentId } } },
   });
 };
