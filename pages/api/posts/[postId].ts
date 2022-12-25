@@ -1,11 +1,19 @@
 import withAuth from "@/lib-server/middleware/with-auth";
+import withValidation from "@/lib-server/middleware/with-validation";
 import prisma from "@/lib-server/prisma";
+import {
+  TUpdatePostSchema,
+  updatePostSchema,
+} from "@/lib-server/validations/post";
 import type { NextApiHandler } from "next";
 
-const handler: NextApiHandler<TGetResponse> = async (req, res) => {
+const handler: NextApiHandler<
+  TGetResponse | TPostResponse | TDeleteResponse
+> = async (req, res) => {
   const {
     method,
     query: { postId, currentUserId },
+    body,
   } = req;
 
   switch (method) {
@@ -15,23 +23,50 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
      */
     case "GET":
       if (typeof postId === "string" && typeof currentUserId === "string") {
-        const data = await getPost(postId, currentUserId);
+        const data = await getPost({ postId, currentUserId });
         res.status(200).json(data);
       }
       res.status(403).end();
       break;
-    // TODO delete post request handler
-    // TODO update post request handler
+    /**
+     * @description update post
+     * @todo test
+     */
+    case "POST":
+      if (typeof postId === "string" && typeof currentUserId === "string") {
+        const postBody = body as TUpdatePostSchema;
+        const data = await updatePost({ currentUserId, postId, postBody });
+        res.status(200).json(data);
+      }
+      res.status(403).end();
+      break;
+    /**
+     * @description delete post
+     * @todo test
+     */
+    case "DELETE":
+      if (typeof currentUserId === "string" && typeof postId === "string") {
+        const data = await deletePost({ currentUserId, postId });
+        res.status(200).json(data);
+      }
+      res.status(403).end();
+      break;
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withAuth(handler);
+export default withValidation(updatePostSchema, withAuth(handler));
 
 export type TGetResponse = Awaited<ReturnType<typeof getPost>>;
-const getPost = async (postId: string, currentUserId: string) => {
+const getPost = async ({
+  postId,
+  currentUserId,
+}: {
+  postId: string;
+  currentUserId: string;
+}) => {
   return await prisma.post.findUnique({
     where: { id: postId },
     include: {
@@ -40,11 +75,45 @@ const getPost = async (postId: string, currentUserId: string) => {
         select: { id: true },
       },
       _count: {
-        select: {
-          comments: true,
-          likes: true,
+        select: { comments: true, likes: true },
+      },
+    },
+  });
+};
+
+export type TPostResponse = Awaited<ReturnType<typeof updatePost>>;
+const updatePost = async ({
+  postId,
+  currentUserId,
+  postBody,
+}: {
+  postId: string;
+  currentUserId: string;
+  postBody: TUpdatePostSchema;
+}) => {
+  return await prisma.user.update({
+    where: { id: currentUserId },
+    data: {
+      posts: {
+        update: {
+          where: { id: postId },
+          data: { ...(postBody.content && { content: postBody.content }) },
         },
       },
     },
+  });
+};
+
+export type TDeleteResponse = Awaited<ReturnType<typeof deletePost>>;
+const deletePost = async ({
+  postId,
+  currentUserId,
+}: {
+  postId: string;
+  currentUserId: string;
+}) => {
+  return await prisma.user.update({
+    where: { id: currentUserId },
+    data: { posts: { delete: { id: postId } } },
   });
 };
