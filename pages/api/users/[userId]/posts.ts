@@ -26,6 +26,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
+
     /**
      * @description create a post
      * @access any logged in user can create a post from themselves
@@ -42,6 +43,7 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
+
 
     default:
       res.setHeader("Allow", ["GET", "POST"]);

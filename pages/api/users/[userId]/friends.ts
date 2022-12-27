@@ -19,6 +19,7 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
       }
       res.status(403).end();
       break;
+
     default:
       res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);

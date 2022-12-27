@@ -28,11 +28,12 @@ const handler: NextApiHandler<
       }
       res.status(403).end();
       break;
+
     /**
      * @description update post
      * @todo test
      */
-    case "POST":
+    case "PATCH":
       if (typeof postId === "string" && typeof currentUserId === "string") {
         const postBody = body as TUpdatePostSchema;
         const data = await updatePost({ currentUserId, postId, postBody });
@@ -40,6 +41,7 @@ const handler: NextApiHandler<
       }
       res.status(403).end();
       break;
+
     /**
      * @description delete post
      * @todo test
@@ -51,8 +53,9 @@ const handler: NextApiHandler<
       }
       res.status(403).end();
       break;
+
     default:
-      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+      res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };

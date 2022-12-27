@@ -29,12 +29,13 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
+
     /**
      * @description update profile
      * @access any logged in user
      * @todo test this route
      */
-    case "POST":
+    case "PATCH":
       if (
         typeof userId === "string" &&
         typeof currentUserId === "string" &&
@@ -46,8 +47,9 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       }
       res.status(403).end();
       break;
+
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET", "PATCH"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
