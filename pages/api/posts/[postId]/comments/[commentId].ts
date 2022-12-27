@@ -2,6 +2,7 @@ import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
 import {
   commentSchema,
+  TCommentSchema,
   TUpdateCommentSchema,
 } from "@/lib-server/validations/comment";
 import prisma from "@/lib-server/prisma";
@@ -13,7 +14,7 @@ const handler: NextApiHandler<
   const {
     method,
     query: { postId, commentId, currentUserId },
-    body: { content },
+    body,
   } = req;
 
   switch (method) {
@@ -28,6 +29,7 @@ const handler: NextApiHandler<
       }
       res.status(403).end();
       break;
+
     /**
      * @description create a child comment
      * @access any logged in user
@@ -38,20 +40,26 @@ const handler: NextApiHandler<
         typeof currentUserId === "string" &&
         typeof postId === "string"
       ) {
+        const commentBody = body as TCommentSchema;
         const data = await createChildComment({
           commentId,
           currentUserId,
           postId,
-          content,
+          commentBody,
         });
         res.status(200).json(data);
       }
       res.status(403).end();
       break;
-    // TODO: handle update commment
-    case "PUT":
+    /**
+     * @description update comment
+     * @todo test
+     * @todo improve sanitation
+     * BUG this route isn't being validated because I don't know how to pass the updateSchema on patch and the create schema on post
+     */
+    case "PATCH":
       if (typeof commentId == "string" && typeof currentUserId === "string") {
-        const commentBody = req.body as TUpdateCommentSchema;
+        const commentBody = body as TUpdateCommentSchema;
         const data = await updateComment({
           currentUserId,
           commentId,
@@ -73,8 +81,9 @@ const handler: NextApiHandler<
       }
       res.status(403).end();
       break;
+
     default:
-      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
       res.status(403).end();
   }
 };
@@ -92,17 +101,17 @@ export type TPostResponse = Awaited<ReturnType<typeof createChildComment>>;
 const createChildComment = async ({
   commentId,
   currentUserId,
-  content,
+  commentBody,
   postId,
 }: {
   commentId: string;
   currentUserId: string;
-  content: string;
+  commentBody: TCommentSchema;
   postId: string;
 }) => {
   return await prisma.comment.create({
     data: {
-      content: content,
+      content: commentBody.content,
       parentComment: { connect: { id: commentId } },
       user: { connect: { id: currentUserId } },
       post: { connect: { id: postId } },
@@ -110,7 +119,7 @@ const createChildComment = async ({
   });
 };
 
-export type TPutResponse = Awaited<ReturnType<typeof updateComment>>;
+export type TPatchResponse = Awaited<ReturnType<typeof updateComment>>;
 const updateComment = async ({
   commentId,
   currentUserId,
