@@ -1,20 +1,22 @@
 import { NextApiHandler } from "next";
 import prisma from "@/lib-server/prisma";
 import withAuth from "@/lib-server/middleware/with-auth";
-import {
-  requestQuerySchema,
-  TRequestQuerySchema,
-} from "@/lib-server/validations/request";
 import withValidation from "@/lib-server/middleware/with-validation";
+import { receivedRequestsIdSchema } from "@/lib-server/validations/users";
+import { z } from "zod";
 
 const handler: NextApiHandler<TPostResponse> = async (req, res) => {
   const { method, query } = req;
   if (method === "POST") {
-    const { currentUserId, requestId } = query as TRequestQuerySchema;
+    const { currentUserId, requestId } = query as z.infer<
+      typeof receivedRequestsIdSchema["post"]["query"]
+    >;
     const data = await acceptFriendRequest({ currentUserId, requestId });
     res.status(201).json(data);
   } else if (method === "DELETE") {
-    const { currentUserId, requestId } = query as TRequestQuerySchema;
+    const { currentUserId, requestId } = query as z.infer<
+      typeof receivedRequestsIdSchema["delete"]["query"]
+    >;
     const data = await deleteReceivedRequest({ currentUserId, requestId });
     res.status(200).json(data);
   } else {
@@ -27,12 +29,12 @@ export default withValidation(
   [
     {
       requestMethod: "DELETE",
-      schema: requestQuerySchema,
+      schema: receivedRequestsIdSchema["delete"]["query"],
       validationTarget: "query",
     },
     {
       requestMethod: "POST",
-      schema: requestQuerySchema,
+      schema: receivedRequestsIdSchema["post"]["query"],
       validationTarget: "query",
     },
   ],

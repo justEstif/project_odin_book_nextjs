@@ -1,55 +1,48 @@
 import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
-import { commentSchema } from "@/lib-server/validations/comment";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
+import { z } from "zod";
+import { commentsSchema } from "@/lib-server/validations/posts";
 
 const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   req,
   res
 ) => {
-  const {
-    method,
-    query: { postId, currentUserId },
-    body: { content },
-  } = req;
+  const { method, query, body } = req;
 
-  switch (method) {
-    /**
-     * @description get comments of a post
-     * @access any logged in user
-     */
-    case "GET":
-      if (typeof postId === "string" && typeof currentUserId === "string") {
-        const data = await getPostComments(postId);
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    /**
-     * @description create comment to a post
-     * @access any logged in user
-     */
-    case "POST":
-      if (typeof postId === "string" && typeof currentUserId === "string") {
-        const data = await createComment({ postId, currentUserId, content });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    default:
-      res.setHeader("Allow", ["GET", "POST"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method === "GET") {
+    const { postId } = query as z.infer<typeof commentsSchema["get"]["query"]>;
+    const data = await getPostComments({ postId });
+    res.status(200).json(data);
+  } else if (method === "POST") {
+    const { postId, currentUserId } = query as z.infer<
+      typeof commentsSchema["post"]["query"]
+    >;
+    const postBody = body as z.infer<typeof commentsSchema["post"]["body"]>;
+    const data = await createComment({ postId, currentUserId, postBody });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["GET", "POST"]);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
 export default withValidation(
   [
     {
+      requestMethod: "GET",
+      schema: commentsSchema["get"]["query"],
+      validationTarget: "query",
+    },
+    {
       requestMethod: "POST",
-      schema: commentSchema,
+      schema: commentsSchema["post"]["query"],
+      validationTarget: "query",
+    },
+    {
+      requestMethod: "POST",
+      schema: commentsSchema["post"]["body"],
       validationTarget: "body",
     },
   ],
@@ -57,7 +50,7 @@ export default withValidation(
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getPostComments>>;
-const getPostComments = async (postId: string) => {
+const getPostComments = async ({ postId }: { postId: string }) => {
   return await prisma.post.findUnique({
     where: { id: postId },
     select: {
@@ -76,18 +69,18 @@ export type TPostResponse = Awaited<ReturnType<typeof createComment>>;
 const createComment = async ({
   postId,
   currentUserId,
-  content,
+  postBody,
 }: {
   postId: string;
   currentUserId: string;
-  content: string;
+  postBody: z.infer<typeof commentsSchema["post"]["body"]>;
 }) => {
   return await prisma.post.update({
     where: { id: postId },
     data: {
       comments: {
         create: {
-          content: content,
+          content: postBody.content,
           user: { connect: { id: currentUserId } },
         },
       },

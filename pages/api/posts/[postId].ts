@@ -1,71 +1,61 @@
 import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
 import prisma from "@/lib-server/prisma";
-import {
-  TUpdatePostSchema,
-  updatePostSchema,
-} from "@/lib-server/validations/post";
+import { postIdSchema } from "@/lib-server/validations/posts";
 import type { NextApiHandler } from "next";
+import { z } from "zod";
 
 const handler: NextApiHandler<
   TGetResponse | TPatchResponse | TDeleteResponse
 > = async (req, res) => {
-  const {
-    method,
-    query: { postId, currentUserId },
-    body,
-  } = req;
+  const { method, query, body } = req;
 
-  switch (method) {
-    /**
-     * @description get posts, get likes and comments count, get current user like
-     * @access any logged in user
-     */
-    case "GET":
-      if (typeof postId === "string" && typeof currentUserId === "string") {
-        const data = await getPost({ postId, currentUserId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    /**
-     * @description update post
-     * @todo test
-     */
-    case "PATCH":
-      if (typeof postId === "string" && typeof currentUserId === "string") {
-        const postBody = body as TUpdatePostSchema;
-        const data = await updatePost({ currentUserId, postId, postBody });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    /**
-     * @description delete post
-     * @todo test
-     */
-    case "DELETE":
-      if (typeof postId === "string" && typeof currentUserId === "string") {
-        const data = await deletePost({ currentUserId, postId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    default:
-      res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method === "GET") {
+    const { postId, currentUserId } = query as z.infer<
+      typeof postIdSchema["get"]["query"]
+    >;
+    const data = await getPost({ postId, currentUserId });
+    res.status(200).json(data);
+  } else if (method === "PATCH") {
+    const { postId, currentUserId } = query as z.infer<
+      typeof postIdSchema["patch"]["query"]
+    >;
+    const postBody = body as z.infer<typeof postIdSchema["patch"]["body"]>;
+    const data = await updatePost({ currentUserId, postId, postBody });
+    res.status(200).json(data);
+  } else if (method === "DELETE") {
+    const { postId, currentUserId } = query as z.infer<
+      typeof postIdSchema["delete"]["query"]
+    >;
+    const data = await deletePost({ currentUserId, postId });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
 export default withValidation(
   [
     {
+      requestMethod: "GET",
+      schema: postIdSchema["get"]["query"],
+      validationTarget: "query",
+    },
+    {
       requestMethod: "PATCH",
-      schema: updatePostSchema,
+      schema: postIdSchema["patch"]["query"],
+      validationTarget: "query",
+    },
+    {
+      requestMethod: "PATCH",
+      schema: postIdSchema["patch"]["body"],
       validationTarget: "body",
+    },
+    {
+      requestMethod: "DELETE",
+      schema: postIdSchema["delete"]["query"],
+      validationTarget: "query",
     },
   ],
   withAuth(handler)
@@ -101,7 +91,7 @@ const updatePost = async ({
 }: {
   postId: string;
   currentUserId: string;
-  postBody: TUpdatePostSchema;
+  postBody: z.infer<typeof postIdSchema["patch"]["body"]>;
 }) => {
   return await prisma.user.update({
     where: { id: currentUserId },

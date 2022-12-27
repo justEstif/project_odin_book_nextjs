@@ -1,36 +1,35 @@
 import type { NextApiHandler } from "next";
+import withValidation from "@/lib-server/middleware/with-validation";
 import withAuth from "@/lib-server/middleware/with-auth";
 import prisma from "@/lib-server/prisma";
+import { z } from "zod";
+import { receivedRequestsSchema } from "@/lib-server/validations/users";
 
 const handler: NextApiHandler<TGetResponse> = async (req, res) => {
-  const {
-    method,
-    query: { userId, currentUserId },
-  } = req;
+  const { method, query } = req;
 
-  switch (method) {
-    /**
-     * @description get received requests of current user
-     * @access only if current user matches request id
-     */
-    case "GET":
-      if (
-        typeof userId === "string" &&
-        typeof currentUserId === "string" &&
-        userId === currentUserId
-      ) {
-        const data = await getReceivedRequests({ currentUserId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-    default:
-      res.setHeader("Allow", ["GET"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method === "GET") {
+    const { currentUserId } = query as z.infer<
+      typeof receivedRequestsSchema["get"]["query"]
+    >;
+    const data = await getReceivedRequests({ currentUserId });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["GET"]);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withAuth(handler);
+export default withValidation(
+  [
+    {
+      schema: receivedRequestsSchema["get"]["query"],
+      validationTarget: "query",
+      requestMethod: "GET",
+    },
+  ],
+  withAuth(handler)
+);
 
 export type TGetResponse = Awaited<ReturnType<typeof getReceivedRequests>>;
 const getReceivedRequests = async ({

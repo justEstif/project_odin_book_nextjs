@@ -1,55 +1,52 @@
 import withAuth from "@/lib-server/middleware/with-auth";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
+import { userIdSchema } from "@/lib-server/validations/users";
+import withValidation from "@/lib-server/middleware/with-validation";
+import { z } from "zod";
 
 const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
   req,
   res
 ) => {
-  const {
-    query: { userId, currentUserId },
-    method,
-  } = req;
+  const { query, method } = req;
 
-  switch (method) {
-    /**
-     * @description get posts, profile, and relation with user by returning its id in the relation type
-     * @access any logged in user
-     */
-    case "GET":
-      if (typeof userId === "string" && typeof currentUserId === "string") {
-        const data = await getPostsProfileFriendsCount({
-          currentUserId,
-          userId,
-        });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-    /**
-     * @description delete the user
-     * @access any logged in user
-     * @todo test this route
-     */
-    case "DELETE":
-      if (
-        typeof userId === "string" &&
-        typeof currentUserId === "string" &&
-        userId === currentUserId
-      ) {
-        const data = await deleteUser({ currentUserId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    default:
-      res.setHeader("Allow", ["GET", "DELETE"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (method === "GET") {
+    const { currentUserId, userId } = query as z.infer<
+      typeof userIdSchema["get"]["query"]
+    >;
+    const data = await getPostsProfileFriendsCount({
+      currentUserId,
+      userId,
+    });
+    res.status(200).json(data);
+  } else if (method === "DELETE") {
+    const { currentUserId } = query as z.infer<
+      typeof userIdSchema["delete"]["query"]
+    >;
+    const data = await deleteUser({ currentUserId });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["GET", "DELETE"]);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withAuth(handler);
+export default withValidation(
+  [
+    {
+      requestMethod: "GET",
+      validationTarget: "query",
+      schema: userIdSchema.get.query,
+    },
+    {
+      requestMethod: "DELETE",
+      validationTarget: "query",
+      schema: userIdSchema.delete.query,
+    },
+  ],
+  withAuth(handler)
+);
 
 export type TGetResponse = Awaited<
   ReturnType<typeof getPostsProfileFriendsCount>

@@ -1,48 +1,48 @@
 import withAuth from "@/lib-server/middleware/with-auth";
+import withValidation from "@/lib-server/middleware/with-validation";
 import prisma from "@/lib-server/prisma";
+import { likesSchema } from "@/lib-server/validations/posts";
 import type { NextApiHandler } from "next";
+import { z } from "zod";
 
 const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   req,
   res
 ) => {
-  const {
-    method,
-    query: { postId, currentUserId },
-  } = req;
-
-  switch (method) {
-    /**
-     * @description get likes of a post
-     * @access any logged in user
-     */
-    case "GET":
-      if (typeof postId === "string") {
-        const data = await getPostLikes({ postId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    /**
-     * @description like or unlike a post
-     * @access any logged in user
-     */
-    case "POST":
-      if (typeof postId === "string" && typeof currentUserId === "string") {
-        const data = await createLike({ postId, currentUserId });
-        res.status(201).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    default:
-      res.setHeader("Allow", ["GET", "POST"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  const { method, query } = req;
+  if (method === "GET") {
+    const { currentUserId, postId } = query as z.infer<
+      typeof likesSchema["get"]["query"]
+    >;
+    const data = await createLike({ postId, currentUserId });
+    res.status(200).json(data);
+  } else if (method === "POST") {
+    const { postId, currentUserId } = query as z.infer<
+      typeof likesSchema["post"]["query"]
+    >;
+    const data = await createLike({ postId, currentUserId });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["GET", "POST"]);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withAuth(handler);
+export default withValidation(
+  [
+    {
+      schema: likesSchema["get"]["query"],
+      requestMethod: "GET",
+      validationTarget: "query",
+    },
+    {
+      schema: likesSchema["post"]["query"],
+      requestMethod: "POST",
+      validationTarget: "query",
+    },
+  ],
+  withAuth(handler)
+);
 
 export type TGetResponse = Awaited<ReturnType<typeof getPostLikes>>;
 const getPostLikes = async ({ postId }: { postId: string }) => {

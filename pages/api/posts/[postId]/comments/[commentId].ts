@@ -1,110 +1,98 @@
 import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
-import {
-  commentSchema,
-  TCommentSchema,
-  TUpdateCommentSchema,
-  updateCommentSchema,
-} from "@/lib-server/validations/comment";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
+import { z } from "zod";
+import { commentsIdSchema } from "@/lib-server/validations/posts";
 
 const handler: NextApiHandler<
   TGetResponse | TPostResponse | TDeleteResponse
 > = async (req, res) => {
-  const {
-    method,
-    query: { postId, commentId, currentUserId },
-    body,
-  } = req;
+  const { method, query, body } = req;
 
-  switch (method) {
-    /**
-     * @description get comment using id
-     * @access any logged in user
-     */
-    case "GET":
-      if (typeof commentId === "string") {
-        const data = await getComment(commentId);
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    /**
-     * @description create a child comment
-     * @access any logged in user
-     */
-    case "POST":
-      if (
-        typeof commentId === "string" &&
-        typeof currentUserId === "string" &&
-        typeof postId === "string"
-      ) {
-        const commentBody = body as TCommentSchema;
-        const data = await createChildComment({
-          commentId,
-          currentUserId,
-          postId,
-          commentBody,
-        });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-    /**
-     * @description update comment
-     * @todo test
-     */
-    case "PATCH":
-      if (typeof commentId == "string" && typeof currentUserId === "string") {
-        const commentBody = body as TUpdateCommentSchema;
-        const data = await updateComment({
-          currentUserId,
-          commentId,
-          commentBody,
-        });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    /**
-     * @description delete comment
-     * @todo test
-     */
-    case "DELETE":
-      if (typeof commentId == "string" && typeof currentUserId === "string") {
-        const data = await deleteComment({ currentUserId, commentId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-
-    default:
-      res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
-      res.status(403).end();
+  if (method === "GET") {
+    const { commentId } = query as z.infer<
+      typeof commentsIdSchema["get"]["query"]
+    >;
+    const data = await getComment({ commentId });
+    res.status(200).json(data);
+  } else if (method === "POST") {
+    const { commentId, currentUserId, postId } = query as z.infer<
+      typeof commentsIdSchema["post"]["query"]
+    >;
+    const commentBody = body as z.infer<
+      typeof commentsIdSchema["post"]["body"]
+    >;
+    const data = await createChildComment({
+      commentId,
+      currentUserId,
+      postId,
+      commentBody,
+    });
+    res.status(200).json(data);
+  } else if (method === "PATCH") {
+    const { currentUserId, commentId } = query as z.infer<
+      typeof commentsIdSchema["patch"]["query"]
+    >;
+    const commentBody = body as z.infer<
+      typeof commentsIdSchema["patch"]["body"]
+    >;
+    const data = await updateComment({
+      currentUserId,
+      commentId,
+      commentBody,
+    });
+    res.status(200).json(data);
+  } else if (method === "DELETE") {
+    const { currentUserId, commentId } = query as z.infer<
+      typeof commentsIdSchema["delete"]["query"]
+    >;
+    const data = await deleteComment({ currentUserId, commentId });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["GET", "POST", "PATCH", "DELETE"]);
+    res.status(403).end();
   }
 };
 
 export default withValidation(
   [
     {
+      requestMethod: "GET",
+      schema: commentsIdSchema["get"]["query"],
+      validationTarget: "query",
+    },
+    {
       requestMethod: "POST",
-      schema: commentSchema,
+      schema: commentsIdSchema["post"]["query"],
+      validationTarget: "query",
+    },
+    {
+      requestMethod: "POST",
+      schema: commentsIdSchema["post"]["body"],
       validationTarget: "body",
     },
     {
       requestMethod: "PATCH",
-      schema: updateCommentSchema,
+      schema: commentsIdSchema["patch"]["query"],
+      validationTarget: "query",
+    },
+    {
+      requestMethod: "PATCH",
+      schema: commentsIdSchema["patch"]["body"],
       validationTarget: "body",
+    },
+    {
+      requestMethod: "DELETE",
+      schema: commentsIdSchema["delete"]["query"],
+      validationTarget: "query",
     },
   ],
   withAuth(handler)
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getComment>>;
-const getComment = async (commentId: string) => {
+const getComment = async ({ commentId }: { commentId: string }) => {
   return await prisma.comment.findUnique({
     where: { id: commentId },
   });
@@ -119,7 +107,7 @@ const createChildComment = async ({
 }: {
   commentId: string;
   currentUserId: string;
-  commentBody: TCommentSchema;
+  commentBody: z.infer<typeof commentsIdSchema["post"]["body"]>;
   postId: string;
 }) => {
   return await prisma.comment.create({
@@ -140,7 +128,7 @@ const updateComment = async ({
 }: {
   commentId: string;
   currentUserId: string;
-  commentBody: TUpdateCommentSchema;
+  commentBody: z.infer<typeof commentsIdSchema["patch"]["body"]>;
 }) => {
   return await prisma.user.update({
     where: { id: currentUserId },
