@@ -88,19 +88,19 @@ const handler: NextApiHandler<
 };
 
 export default withValidation(
-  {
-    requestMethod: "POST",
-    schema: commentSchema,
-    validationTarget: "body",
-  },
-  withValidation(
+  [
+    {
+      requestMethod: "POST",
+      schema: commentSchema,
+      validationTarget: "body",
+    },
     {
       requestMethod: "PATCH",
       schema: updateCommentSchema,
       validationTarget: "body",
     },
-    withAuth(handler)
-  )
+  ],
+  withAuth(handler)
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getComment>>;

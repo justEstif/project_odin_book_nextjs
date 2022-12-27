@@ -8,7 +8,7 @@ type TValidation = {
   validationTarget: keyof NextApiRequest;
 };
 
-const withValidation2 = (
+const withValidation = (
   validations: TValidation[],
   handler: NextApiHandler
 ) => {
@@ -27,29 +27,6 @@ const withValidation2 = (
       }
     }
     return handler(req, res);
-  };
-  return middleware;
-};
-
-const withValidation = (
-  { validationTarget, requestMethod, schema }: TValidation,
-  handler: NextApiHandler
-) => {
-  const middleware: NextApiHandler = (req, res) => {
-    switch (req.method) {
-      case requestMethod:
-        try {
-          schema.parse(req[validationTarget] ? req[validationTarget] : {});
-          return handler(req, res);
-        } catch (error) {
-          if (error instanceof z.ZodError) {
-            return res.status(422).json(error.issues);
-          }
-          return res.status(422).end();
-        }
-      default:
-        return handler(req, res);
-    }
   };
   return middleware;
 };

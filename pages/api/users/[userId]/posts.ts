@@ -51,11 +51,13 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
 };
 
 export default withValidation(
-  {
-    requestMethod: "POST",
-    schema: postSchema,
-    validationTarget: "body",
-  },
+  [
+    {
+      requestMethod: "POST",
+      schema: postSchema,
+      validationTarget: "body",
+    },
+  ],
   withAuth(handler)
 );
 

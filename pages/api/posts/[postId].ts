@@ -61,11 +61,13 @@ const handler: NextApiHandler<
 };
 
 export default withValidation(
-  {
-    requestMethod: "PATCH",
-    schema: updatePostSchema,
-    validationTarget: "body",
-  },
+  [
+    {
+      requestMethod: "PATCH",
+      schema: updatePostSchema,
+      validationTarget: "body",
+    },
+  ],
   withAuth(handler)
 );
 

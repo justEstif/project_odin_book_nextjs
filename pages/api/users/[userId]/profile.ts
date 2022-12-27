@@ -55,11 +55,13 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
 };
 
 export default withValidation(
-  {
-    requestMethod: "PATCH",
-    schema: updateProfileSchema,
-    validationTarget: "body",
-  },
+  [
+    {
+      requestMethod: "PATCH",
+      schema: updateProfileSchema,
+      validationTarget: "body",
+    },
+  ],
   withAuth(handler)
 );
 
