@@ -45,7 +45,14 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   }
 };
 
-export default withValidation(commentSchema, withAuth(handler));
+export default withValidation(
+  {
+    requestMethod: "POST",
+    schema: commentSchema,
+    validationTarget: "body",
+  },
+  withAuth(handler)
+);
 
 // TODO: figure out how to work with parentComment and childComments
 export type TGetResponse = Awaited<ReturnType<typeof getPostComments>>;

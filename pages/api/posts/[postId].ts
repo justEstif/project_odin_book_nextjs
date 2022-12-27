@@ -60,7 +60,14 @@ const handler: NextApiHandler<
   }
 };
 
-export default withValidation(updatePostSchema, withAuth(handler));
+export default withValidation(
+  {
+    requestMethod: "PATCH",
+    schema: updatePostSchema,
+    validationTarget: "body",
+  },
+  withAuth(handler)
+);
 
 export type TGetResponse = Awaited<ReturnType<typeof getPost>>;
 const getPost = async ({

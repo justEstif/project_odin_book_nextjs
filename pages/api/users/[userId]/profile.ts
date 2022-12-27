@@ -54,7 +54,14 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   }
 };
 
-export default withValidation(updateProfileSchema, withAuth(handler));
+export default withValidation(
+  {
+    requestMethod: "PATCH",
+    schema: updateProfileSchema,
+    validationTarget: "body",
+  },
+  withAuth(handler)
+);
 
 export type TGetResponse = Awaited<ReturnType<typeof getProfile>>;
 const getProfile = async (id: string) => {

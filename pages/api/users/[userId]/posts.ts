@@ -44,14 +44,20 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
       res.status(403).end();
       break;
 
-
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withValidation(postSchema, withAuth(handler));
+export default withValidation(
+  {
+    requestMethod: "POST",
+    schema: postSchema,
+    validationTarget: "body",
+  },
+  withAuth(handler)
+);
 
 export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;
 const getPosts = async ({ userId }: { userId: string }) => {

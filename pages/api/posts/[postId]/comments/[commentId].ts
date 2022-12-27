@@ -4,6 +4,7 @@ import {
   commentSchema,
   TCommentSchema,
   TUpdateCommentSchema,
+  updateCommentSchema,
 } from "@/lib-server/validations/comment";
 import prisma from "@/lib-server/prisma";
 import type { NextApiHandler } from "next";
@@ -88,7 +89,21 @@ const handler: NextApiHandler<
   }
 };
 
-export default withValidation(commentSchema, withAuth(handler));
+export default withValidation(
+  {
+    requestMethod: "POST",
+    schema: commentSchema,
+    validationTarget: "body",
+  },
+  withValidation(
+    {
+      requestMethod: "PATCH",
+      schema: updateCommentSchema,
+      validationTarget: "body",
+    },
+    withAuth(handler)
+  )
+);
 
 export type TGetResponse = Awaited<ReturnType<typeof getComment>>;
 const getComment = async (commentId: string) => {
