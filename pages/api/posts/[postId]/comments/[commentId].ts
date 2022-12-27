@@ -55,8 +55,6 @@ const handler: NextApiHandler<
     /**
      * @description update comment
      * @todo test
-     * @todo improve sanitation
-     * BUG this route isn't being validated because I don't know how to pass the updateSchema on patch and the create schema on post
      */
     case "PATCH":
       if (typeof commentId == "string" && typeof currentUserId === "string") {

@@ -54,7 +54,6 @@ export default withValidation(
   withAuth(handler)
 );
 
-// TODO: figure out how to work with parentComment and childComments
 export type TGetResponse = Awaited<ReturnType<typeof getPostComments>>;
 const getPostComments = async (postId: string) => {
   return await prisma.post.findUnique({

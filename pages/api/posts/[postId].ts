@@ -8,7 +8,7 @@ import {
 import type { NextApiHandler } from "next";
 
 const handler: NextApiHandler<
-  TGetResponse | TPostResponse | TDeleteResponse
+  TGetResponse | TPatchResponse | TDeleteResponse
 > = async (req, res) => {
   const {
     method,
@@ -47,7 +47,7 @@ const handler: NextApiHandler<
      * @todo test
      */
     case "DELETE":
-      if (typeof currentUserId === "string" && typeof postId === "string") {
+      if (typeof postId === "string" && typeof currentUserId === "string") {
         const data = await deletePost({ currentUserId, postId });
         res.status(200).json(data);
       }
@@ -91,7 +91,7 @@ const getPost = async ({
   });
 };
 
-export type TPostResponse = Awaited<ReturnType<typeof updatePost>>;
+export type TPatchResponse = Awaited<ReturnType<typeof updatePost>>;
 const updatePost = async ({
   postId,
   currentUserId,
