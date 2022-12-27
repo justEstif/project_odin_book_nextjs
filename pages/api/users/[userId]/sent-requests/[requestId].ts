@@ -1,55 +1,47 @@
 import { NextApiHandler } from "next";
 import prisma from "@/lib-server/prisma";
 import withAuth from "@/lib-server/middleware/with-auth";
+import {
+  requestQuerySchema,
+  TRequestQuerySchema,
+} from "@/lib-server/validations/request";
+import withValidation from "@/lib-server/middleware/with-validation";
 
+/**
+ * @todo test POST route
+ * @todo test DELETE route
+ */
 const handler: NextApiHandler<TPostResponse> = async (req, res) => {
-  const {
-    method,
-    query: { userId, currentUserId, requestId },
-  } = req;
-
-  switch (method) {
-    /**
-     * @description send a friend request
-     * @access any logged in user
-     * @todo test route
-     */
-    case "POST":
-      if (
-        typeof userId === "string" &&
-        typeof currentUserId === "string" &&
-        typeof requestId === "string" &&
-        userId === currentUserId
-      ) {
-        const data = await sendFriendRequest({ currentUserId, requestId });
-        res.status(201).json(data);
-      }
-      res.status(403).end();
-      break;
-    /**
-     * @description delete a sent friend request
-     * @access any logged in user
-     * @todo test route
-     */
-    case "DELETE":
-      if (
-        typeof userId === "string" &&
-        typeof currentUserId === "string" &&
-        typeof requestId === "string" &&
-        userId === currentUserId
-      ) {
-        const data = await deleteSentRequest({ currentUserId, requestId });
-        res.status(200).json(data);
-      }
-      res.status(403).end();
-      break;
-    default:
-      res.setHeader("Allow", ["POST", "DELETE"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  const { method, query } = req;
+  if (method === "POST") {
+    const { currentUserId, requestId } = query as TRequestQuerySchema;
+    const data = await sendFriendRequest({ currentUserId, requestId });
+    res.status(201).json(data);
+  } else if (method === "DELETE") {
+    const { currentUserId, requestId } = query as TRequestQuerySchema;
+    const data = await deleteSentRequest({ currentUserId, requestId });
+    res.status(200).json(data);
+  } else {
+    res.setHeader("Allow", ["POST", "DELETE"]);
+    res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
 
-export default withAuth(handler);
+export default withValidation(
+  {
+    requestMethod: "DELETE",
+    schema: requestQuerySchema,
+    validationTarget: "query",
+  },
+  withValidation(
+    {
+      requestMethod: "POST",
+      schema: requestQuerySchema,
+      validationTarget: "query",
+    },
+    withAuth(handler)
+  )
+);
 
 export type TPostResponse = Awaited<ReturnType<typeof sendFriendRequest>>;
 const sendFriendRequest = async ({
