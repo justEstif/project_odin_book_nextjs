@@ -25,20 +25,22 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
   }
 };
 
-export default withValidation(
-  [
-    {
-      requestMethod: "DELETE",
-      schema: receivedRequestsIdSchema["delete"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "POST",
-      schema: receivedRequestsIdSchema["post"]["query"],
-      validationTarget: "query",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        requestMethod: "DELETE",
+        schema: receivedRequestsIdSchema["delete"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "POST",
+        schema: receivedRequestsIdSchema["post"]["query"],
+        validationTarget: "query",
+      },
+    ],
+    handler
+  )
 );
 
 export type TPostResponse = Awaited<ReturnType<typeof acceptFriendRequest>>;

@@ -35,30 +35,32 @@ const handler: NextApiHandler<
   }
 };
 
-export default withValidation(
-  [
-    {
-      requestMethod: "GET",
-      schema: postIdSchema["get"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "PATCH",
-      schema: postIdSchema["patch"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "PATCH",
-      schema: postIdSchema["patch"]["body"],
-      validationTarget: "body",
-    },
-    {
-      requestMethod: "DELETE",
-      schema: postIdSchema["delete"]["query"],
-      validationTarget: "query",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        requestMethod: "GET",
+        schema: postIdSchema["get"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "PATCH",
+        schema: postIdSchema["patch"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "PATCH",
+        schema: postIdSchema["patch"]["body"],
+        validationTarget: "body",
+      },
+      {
+        requestMethod: "DELETE",
+        schema: postIdSchema["delete"]["query"],
+        validationTarget: "query",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getPost>>;

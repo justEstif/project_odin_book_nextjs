@@ -28,25 +28,27 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   }
 };
 
-export default withValidation(
-  [
-    {
-      requestMethod: "GET",
-      schema: profileSchema["get"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "PATCH",
-      schema: profileSchema["patch"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "PATCH",
-      schema: profileSchema["patch"]["body"],
-      validationTarget: "body",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        requestMethod: "GET",
+        schema: profileSchema["get"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "PATCH",
+        schema: profileSchema["patch"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "PATCH",
+        schema: profileSchema["patch"]["body"],
+        validationTarget: "body",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getProfile>>;

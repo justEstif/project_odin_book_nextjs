@@ -16,7 +16,7 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   }
 };
 
-withValidation(
+export default withValidation(
   [
     {
       validationTarget: "query",

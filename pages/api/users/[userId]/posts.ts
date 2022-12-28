@@ -27,25 +27,27 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   }
 };
 
-export default withValidation(
-  [
-    {
-      requestMethod: "GET",
-      schema: postsSchema["get"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "POST",
-      schema: postsSchema["post"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "POST",
-      schema: postsSchema["post"]["body"],
-      validationTarget: "body",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        requestMethod: "GET",
+        schema: postsSchema["get"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "POST",
+        schema: postsSchema["post"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "POST",
+        schema: postsSchema["post"]["body"],
+        validationTarget: "body",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;

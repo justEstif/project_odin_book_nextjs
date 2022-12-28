@@ -18,15 +18,18 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
-export default withValidation(
-  [
-    {
-      schema: postsSchema.get.query,
-      requestMethod: "GET",
-      validationTarget: "query",
-    },
-  ],
-  withAuth(handler)
+
+export default withAuth(
+  withValidation(
+    [
+      {
+        schema: postsSchema.get.query,
+        requestMethod: "GET",
+        validationTarget: "query",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;

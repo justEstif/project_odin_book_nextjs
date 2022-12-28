@@ -20,15 +20,17 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   }
 };
 
-export default withValidation(
-  [
-    {
-      schema: receivedRequestsSchema["get"]["query"],
-      validationTarget: "query",
-      requestMethod: "GET",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        schema: receivedRequestsSchema["get"]["query"],
+        validationTarget: "query",
+        requestMethod: "GET",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getReceivedRequests>>;

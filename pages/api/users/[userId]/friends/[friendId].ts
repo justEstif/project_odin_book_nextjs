@@ -20,15 +20,17 @@ const handler: NextApiHandler<TDeleteResponse> = async (req, res) => {
   }
 };
 
-export default withValidation(
-  [
-    {
-      validationTarget: "query",
-      requestMethod: "DELETE",
-      schema: friendsIdSchema["delete"]["query"],
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        validationTarget: "query",
+        requestMethod: "DELETE",
+        schema: friendsIdSchema["delete"]["query"],
+      },
+    ],
+    handler
+  )
 );
 
 export type TDeleteResponse = Awaited<ReturnType<typeof deleteFriend>>;

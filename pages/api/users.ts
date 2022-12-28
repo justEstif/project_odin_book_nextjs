@@ -19,15 +19,17 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   }
 };
 
-export default withValidation(
-  [
-    {
-      schema: usersSchema.get.query,
-      requestMethod: "GET",
-      validationTarget: "query",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        schema: usersSchema.get.query,
+        requestMethod: "GET",
+        validationTarget: "query",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getNameImage>>;

@@ -11,10 +11,8 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
 ) => {
   const { method, query } = req;
   if (method === "GET") {
-    const { currentUserId, postId } = query as z.infer<
-      typeof likesSchema["get"]["query"]
-    >;
-    const data = await createLike({ postId, currentUserId });
+    const { postId } = query as z.infer<typeof likesSchema["get"]["query"]>;
+    const data = await getPostLikes({ postId });
     res.status(200).json(data);
   } else if (method === "POST") {
     const { postId, currentUserId } = query as z.infer<
@@ -28,20 +26,22 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
   }
 };
 
-export default withValidation(
-  [
-    {
-      schema: likesSchema["get"]["query"],
-      requestMethod: "GET",
-      validationTarget: "query",
-    },
-    {
-      schema: likesSchema["post"]["query"],
-      requestMethod: "POST",
-      validationTarget: "query",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        schema: likesSchema["get"]["query"],
+        requestMethod: "GET",
+        validationTarget: "query",
+      },
+      {
+        schema: likesSchema["post"]["query"],
+        requestMethod: "POST",
+        validationTarget: "query",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getPostLikes>>;
@@ -82,11 +82,23 @@ const createLike = async ({
       return await prisma.post.update({
         where: { id: postId },
         data: { likes: { disconnect: { id: currentUserId } } },
+        select: {
+          likes: {
+            where: { id: currentUserId },
+            select: { id: true },
+          },
+        },
       });
     } else {
       return await prisma.post.update({
         where: { id: postId },
         data: { likes: { connect: { id: currentUserId } } },
+        select: {
+          likes: {
+            where: { id: currentUserId },
+            select: { id: true },
+          },
+        },
       });
     }
   }

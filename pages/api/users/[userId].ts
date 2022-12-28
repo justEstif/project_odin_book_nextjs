@@ -32,20 +32,22 @@ const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
   }
 };
 
-export default withValidation(
-  [
-    {
-      requestMethod: "GET",
-      validationTarget: "query",
-      schema: userIdSchema.get.query,
-    },
-    {
-      requestMethod: "DELETE",
-      validationTarget: "query",
-      schema: userIdSchema.delete.query,
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        requestMethod: "GET",
+        validationTarget: "query",
+        schema: userIdSchema.get.query,
+      },
+      {
+        requestMethod: "DELETE",
+        validationTarget: "query",
+        schema: userIdSchema.delete.query,
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<
