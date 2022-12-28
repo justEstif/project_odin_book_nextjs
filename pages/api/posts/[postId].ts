@@ -78,9 +78,7 @@ const getPost = async ({
         where: { id: currentUserId },
         select: { id: true },
       },
-      _count: {
-        select: { comments: true, likes: true },
-      },
+      _count: { select: { comments: true, likes: true } },
     },
   });
 };

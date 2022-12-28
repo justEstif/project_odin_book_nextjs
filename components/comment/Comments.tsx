@@ -2,6 +2,7 @@
 import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]/comments";
 import { nanoid } from "nanoid";
+import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
   mutate: Function;
 };
 
-const PostComments = ({ postCommentsCount, postId, mutate }: Props) => {
+const Comments = ({ postCommentsCount, postId, mutate }: Props) => {
   const {
     trigger,
     reset,
@@ -21,20 +22,18 @@ const PostComments = ({ postCommentsCount, postId, mutate }: Props) => {
   } else {
     return (
       <div>
-        <CommentForm postId={postId} trigger={trigger} mutate={mutate} />
+        {/* TODO Add comment form here */}
         <button onClick={comments ? reset : trigger}>
-          {postCommentsCount} comments
+          {postCommentsCount}-Show all comments
         </button>
         {comments?.comments.map((comment) => (
           <div key={nanoid()}>
-            {/* TODO: add child comment */}
-            <p>{comment.content}</p>
-            <CommentForm
-              commentId={comment.id}
-              postId={postId}
-              trigger={trigger}
-              mutate={mutate}
-            />
+            <Comment key={nanoid()} comment={comment} />
+            {comment.childComments.length
+              ? comment.childComments.map((childComment) => (
+                  <Comment key={nanoid()} comment={childComment} />
+                ))
+              : null}
           </div>
         ))}
       </div>
@@ -42,7 +41,7 @@ const PostComments = ({ postCommentsCount, postId, mutate }: Props) => {
   }
 };
 
-export default PostComments;
+export default Comments;
 
 const getComments = async (url: string) => {
   const res = await fetch(url);

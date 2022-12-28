@@ -1,4 +1,4 @@
-import Post from "@/components/posts/post/Post";
+import Post from "@/components/post/Post";
 
 type Props = {
   params: {

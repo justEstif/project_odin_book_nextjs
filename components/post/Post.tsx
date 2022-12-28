@@ -4,7 +4,7 @@ import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]";
 import { TPostResponse } from "@/api/posts/[postId]/likes";
 import { fetcher } from "@/lib-client/swr/fetcher";
-import PostComments from "./PostComments";
+import Comments from "../comment/Comments";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -47,7 +47,7 @@ const Post = ({ postId }: Props) => {
       <button onClick={handleLikeBtnClick}>
         {(userLike && userLike?.likes.length && "Unlike") || "Like"}
       </button>
-      <PostComments
+      <Comments
         postId={postId}
         mutate={mutate}
         postCommentsCount={postCommentCount}
