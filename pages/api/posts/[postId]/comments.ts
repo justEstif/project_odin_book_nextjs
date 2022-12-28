@@ -58,9 +58,24 @@ const getPostComments = async ({ postId }: { postId: string }) => {
     select: {
       id: true,
       comments: {
+        where: { parentCommentId: null },
         include: {
-          parentComment: { select: { id: true } },
-          childComments: { select: { id: true } },
+          childComments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  profile: { select: { name: true, image: true } },
+                },
+              },
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              profile: { select: { name: true, image: true } },
+            },
+          },
         },
       },
     },
