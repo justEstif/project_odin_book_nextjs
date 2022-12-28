@@ -1,4 +1,5 @@
-import SignOutBtn from "./(components)/SignOutBtn";
+import SignOutBtn from "@/components/auth/SignOutBtn";
+
 type Props = {};
 
 const Page = ({}: Props) => {

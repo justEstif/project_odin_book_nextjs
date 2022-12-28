@@ -7,7 +7,7 @@ import { fetcher } from "@/lib-client/swr/fetcher";
 
 type Props = {};
 
-const Posts = ({}: Props) => {
+const Posts = ({ }: Props) => {
   const {
     data: posts,
     error,
@@ -18,6 +18,7 @@ const Posts = ({}: Props) => {
   } else if (error || typeof posts === "undefined") {
     return <div>Page has error</div>;
   }
+
   return (
     <div>
       {posts &&

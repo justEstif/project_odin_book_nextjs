@@ -1,8 +1,8 @@
-import AuthForm from "../(components)/AuthForm";
+import AuthForm from "@/components/auth/AuthForm";
 
 type Props = {};
 
-const Page = ({}: Props) => {
+const Page = ({ }: Props) => {
   return (
     <div>
       <h1>Sign up Page</h1>

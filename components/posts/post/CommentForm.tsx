@@ -1,10 +1,11 @@
 "use client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
-  TCommentSchema,
-  commentSchema,
-} from "@/lib-server/validations/comment";
+  commentsSchema,
+  commentsIdSchema,
+} from "@/lib-server/validations/posts";
 
 type Props = {
   postId: string;
@@ -14,16 +15,22 @@ type Props = {
 };
 
 const CommentForm = ({ postId, commentId, trigger, mutate }: Props) => {
+  type TForm = typeof commentId extends string
+    ? z.infer<typeof commentsSchema["post"]["body"]>
+    : z.infer<typeof commentsIdSchema["post"]["body"]>;
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<TCommentSchema>({
-    resolver: zodResolver(commentSchema),
+  } = useForm<TForm>({
+    resolver: commentId
+      ? zodResolver(commentsIdSchema["post"]["body"])
+      : zodResolver(commentsSchema["post"]["body"]),
   });
 
-  const onSubmit: SubmitHandler<TCommentSchema> = async (data) => {
+  const onSubmit: SubmitHandler<TForm> = async (data) => {
     try {
       const url = commentId
         ? `/api/posts/${postId}/comments/${commentId}`

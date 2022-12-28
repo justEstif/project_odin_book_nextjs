@@ -1,4 +1,4 @@
-import SessionProvider from "./(components)/SessionProvider";
+import SessionProvider from "@/components/SessionProvider";
 
 interface IRootLayout {
   children: React.ReactNode;

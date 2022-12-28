@@ -1,10 +1,10 @@
 "use client";
 import useSWR from "swr";
+import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]";
+import { TPostResponse } from "@/api/posts/[postId]/likes";
 import { fetcher } from "@/lib-client/swr/fetcher";
-import PostContent from "./PostContent";
 import PostComments from "./PostComments";
-import PostLikeBtn from "./PostLikeBtn";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
 };
 
 const Post = ({ postId }: Props) => {
-  const [userLike, setUserLike] = useState(false);
   const [postCommentCount, setPostCommentCount] = useState(0);
+
   const {
     data: post,
     error,
@@ -21,12 +21,19 @@ const Post = ({ postId }: Props) => {
     mutate,
   } = useSWR<TGetResponse>(`/api/posts/${postId}`, fetcher);
 
+  const { data: userLike, trigger } = useSWRMutation<Awaited<TPostResponse>>(
+    `/api/posts/${postId}/likes`,
+    updateLike
+  );
+
   useEffect(() => {
     setPostCommentCount(post?._count.comments || 0);
-    post?.likes.map((like) => like.id).length
-      ? setUserLike(true)
-      : setUserLike(false);
   }, [post]);
+
+  const handleLikeBtnClick = () => {
+    trigger(post?.id);
+    mutate();
+  };
 
   if (isLoading) {
     return <div>Page is loading</div>;
@@ -36,8 +43,10 @@ const Post = ({ postId }: Props) => {
 
   return (
     <div>
-      <PostContent postContent={post?.content} />
-      <PostLikeBtn postId={postId} mutate={mutate} userLike={userLike} />
+      {post?.content && <div>{post.content}</div>}
+      <button onClick={handleLikeBtnClick}>
+        {(userLike && userLike?.likes.length && "Unlike") || "Like"}
+      </button>
       <PostComments
         postId={postId}
         mutate={mutate}
@@ -48,3 +57,11 @@ const Post = ({ postId }: Props) => {
 };
 
 export default Post;
+
+const updateLike = async (url: string) => {
+  const res = await fetch(url, { method: "POST" });
+  if (res.ok) {
+    return (await res.json()) as TPostResponse;
+  }
+  throw new Error("An error occured");
+};

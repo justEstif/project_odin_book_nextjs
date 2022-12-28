@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -21,9 +25,18 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/api/*": ["pages/api/*"],
-      "@/lib-server/*": ["lib-server/*"],
-      "@/lib-client/*": ["lib-client/*"]
+      "@/api/*": [
+        "pages/api/*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/lib-server/*": [
+        "lib-server/*"
+      ],
+      "@/lib-client/*": [
+        "lib-client/*"
+      ]
     }
   },
   "include": [
@@ -33,5 +46,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
