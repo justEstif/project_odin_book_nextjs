@@ -55,40 +55,42 @@ const handler: NextApiHandler<
   }
 };
 
-export default withValidation(
-  [
-    {
-      requestMethod: "GET",
-      schema: commentsIdSchema["get"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "POST",
-      schema: commentsIdSchema["post"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "POST",
-      schema: commentsIdSchema["post"]["body"],
-      validationTarget: "body",
-    },
-    {
-      requestMethod: "PATCH",
-      schema: commentsIdSchema["patch"]["query"],
-      validationTarget: "query",
-    },
-    {
-      requestMethod: "PATCH",
-      schema: commentsIdSchema["patch"]["body"],
-      validationTarget: "body",
-    },
-    {
-      requestMethod: "DELETE",
-      schema: commentsIdSchema["delete"]["query"],
-      validationTarget: "query",
-    },
-  ],
-  withAuth(handler)
+export default withAuth(
+  withValidation(
+    [
+      {
+        requestMethod: "GET",
+        schema: commentsIdSchema["get"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "POST",
+        schema: commentsIdSchema["post"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "POST",
+        schema: commentsIdSchema["post"]["body"],
+        validationTarget: "body",
+      },
+      {
+        requestMethod: "PATCH",
+        schema: commentsIdSchema["patch"]["query"],
+        validationTarget: "query",
+      },
+      {
+        requestMethod: "PATCH",
+        schema: commentsIdSchema["patch"]["body"],
+        validationTarget: "body",
+      },
+      {
+        requestMethod: "DELETE",
+        schema: commentsIdSchema["delete"]["query"],
+        validationTarget: "query",
+      },
+    ],
+    handler
+  )
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getComment>>;
