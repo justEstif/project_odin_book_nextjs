@@ -4,7 +4,6 @@ type Props = {
   params: {
     postId: string;
   };
-  children: React.ReactNode;
 };
 
 const Page = async ({ params: { postId } }: Props) => {

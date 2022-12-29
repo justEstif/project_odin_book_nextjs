@@ -5,20 +5,16 @@ import { TGetResponse } from "@/api/posts/[postId]";
 import { TPostResponse } from "@/api/posts/[postId]/likes";
 import { fetcher } from "@/lib-client/swr/fetcher";
 import Comments from "../comment/Comments";
-import { useEffect, useState } from "react";
 
 type Props = {
   postId: string;
 };
 
 const Post = ({ postId }: Props) => {
-  const [postCommentCount, setPostCommentCount] = useState(0);
-
   const {
     data: post,
     error,
     isLoading,
-    mutate,
   } = useSWR<TGetResponse>(`/api/posts/${postId}`, fetcher);
 
   const { data: userLike, trigger } = useSWRMutation<Awaited<TPostResponse>>(
@@ -26,13 +22,8 @@ const Post = ({ postId }: Props) => {
     updateLike
   );
 
-  useEffect(() => {
-    setPostCommentCount(post?._count.comments || 0);
-  }, [post]);
-
   const handleLikeBtnClick = () => {
     trigger(post?.id);
-    mutate();
   };
 
   if (isLoading) {
@@ -47,11 +38,7 @@ const Post = ({ postId }: Props) => {
       <button onClick={handleLikeBtnClick}>
         {(userLike && userLike?.likes.length && "Unlike") || "Like"}
       </button>
-      <Comments
-        postId={postId}
-        mutate={mutate}
-        postCommentsCount={postCommentCount}
-      />
+      <Comments postId={postId} />
     </div>
   );
 };

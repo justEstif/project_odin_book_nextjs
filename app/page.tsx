@@ -1,12 +1,10 @@
-import PostForm from "@/components/PostForm";
-import Posts from "@/components/Posts";
+import Posts from "@/components/post/Posts";
 
 type Props = {};
 
-const Page = ({}: Props) => {
+const Page = ({ }: Props) => {
   return (
     <div>
-      <PostForm />
       <Posts />
     </div>
   );
