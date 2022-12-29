@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 type Props = {
   functions: {
     trigger: Function;
-    mutate: Function;
   };
   ids: {
     commentId?: string;
@@ -38,21 +37,18 @@ const CommentForm = ({ ids, functions }: Props) => {
     const url = ids.commentId
       ? `/api/posts/${ids.postId}/comments/${ids.commentId}`
       : `/api/posts/${ids.postId}/comments`;
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (res.ok) {
-        functions.trigger(); // trigger fetch
-        functions.mutate(); // mutate count
-        reset(); // reset form
-      }
-    } catch (err) {
-      console.log(err);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      functions.trigger(); // get comments again
+      reset(); // reset form
+    } else {
+      throw new Error("Error creating comment");
     }
   };
 
@@ -65,8 +61,6 @@ const CommentForm = ({ ids, functions }: Props) => {
           {errors.content?.message && <p>{errors.content?.message}</p>}
         </label>
       </form>
-      <div>comment id: {ids.commentId}</div>
-      <div>post id: {ids.postId}</div>
     </div>
   );
 };
