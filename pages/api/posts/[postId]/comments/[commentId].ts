@@ -97,6 +97,15 @@ export type TGetResponse = Awaited<ReturnType<typeof getComment>>;
 const getComment = async ({ commentId }: { commentId: string }) => {
   return await prisma.comment.findUnique({
     where: { id: commentId },
+    include: {
+      childComments: {
+        include: {
+          user: {
+            select: { profile: { select: { name: true, image: true } } },
+          },
+        },
+      },
+    },
   });
 };
 
@@ -132,6 +141,7 @@ const updateComment = async ({
   currentUserId: string;
   commentBody: z.infer<typeof commentsIdSchema["patch"]["body"]>;
 }) => {
+  // TODO better validations that the request is coming from the original writer
   return await prisma.user.update({
     where: { id: currentUserId },
     data: {

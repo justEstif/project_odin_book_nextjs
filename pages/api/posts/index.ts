@@ -40,6 +40,7 @@ const getPosts = async (currentUserId: string) => {
       OR: [
         { user: { friends: { some: { id: currentUserId } } } },
         { user: { friendsOf: { some: { id: currentUserId } } } },
+        { user: { id: currentUserId } },
       ],
     },
     include: {

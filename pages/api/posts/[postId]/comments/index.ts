@@ -19,8 +19,12 @@ const handler: NextApiHandler<TGetResponse | TPostResponse> = async (
     const { postId, currentUserId } = query as z.infer<
       typeof commentsSchema["post"]["query"]
     >;
-    const postBody = body as z.infer<typeof commentsSchema["post"]["body"]>;
-    const data = await createComment({ postId, currentUserId, postBody });
+    const commentBody = body as z.infer<typeof commentsSchema["post"]["body"]>;
+    const data = await createComment({
+      postId,
+      currentUserId,
+      commentBody,
+    });
     res.status(200).json(data);
   } else {
     res.setHeader("Allow", ["GET", "POST"]);
@@ -53,31 +57,10 @@ export default withAuth(
 
 export type TGetResponse = Awaited<ReturnType<typeof getPostComments>>;
 const getPostComments = async ({ postId }: { postId: string }) => {
-  return await prisma.post.findUnique({
-    where: { id: postId },
-    select: {
-      id: true,
-      comments: {
-        where: { parentCommentId: null },
-        include: {
-          childComments: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  profile: { select: { name: true, image: true } },
-                },
-              },
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              profile: { select: { name: true, image: true } },
-            },
-          },
-        },
-      },
+  return await prisma.comment.findMany({
+    where: { postId: postId, parentCommentId: null },
+    include: {
+      user: { select: { profile: { select: { name: true, image: true } } } },
     },
   });
 };
@@ -86,21 +69,17 @@ export type TPostResponse = Awaited<ReturnType<typeof createComment>>;
 const createComment = async ({
   postId,
   currentUserId,
-  postBody,
+  commentBody,
 }: {
   postId: string;
   currentUserId: string;
-  postBody: z.infer<typeof commentsSchema["post"]["body"]>;
+  commentBody: z.infer<typeof commentsSchema["post"]["body"]>;
 }) => {
-  return await prisma.post.update({
-    where: { id: postId },
+  return await prisma.comment.create({
     data: {
-      comments: {
-        create: {
-          content: postBody.content,
-          user: { connect: { id: currentUserId } },
-        },
-      },
+      content: commentBody.content,
+      user: { connect: { id: currentUserId } },
+      post: { connect: { id: postId } },
     },
   });
 };
