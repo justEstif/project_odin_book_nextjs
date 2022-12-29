@@ -104,7 +104,7 @@ model Comment {
 
   // comment to comment relation
   parentComment   Comment?  @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
-  parentCommentId String?   @unique
+  parentCommentId String?
   childComments   Comment[] @relation("CommentParentsComment")
 }
 
