@@ -3,13 +3,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postsSchema } from "@/lib-server/validations/users";
 import { z } from "zod";
+import { useSession } from "next-auth/react";
 
-type Props = {};
+type Props = { mutate: Function };
 
-const PostForm = ({}: Props) => {
+const PostForm = ({ mutate }: Props) => {
+  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<z.infer<typeof postsSchema["post"]["body"]>>({
     resolver: zodResolver(postsSchema["post"]["body"]),
@@ -19,14 +22,17 @@ const PostForm = ({}: Props) => {
     z.infer<typeof postsSchema["post"]["body"]>
   > = async (data) => {
     try {
-      const res = await fetch("/api/posts", {
+      const res = await fetch(`/api/users/${session?.user.id}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
-      if (res.ok) console.log("Created post");
+      if (res.ok) {
+        reset();
+        mutate();
+      }
     } catch (err) {
       console.log(err);
     }

@@ -1,18 +1,20 @@
 "use client";
 import type { TGetResponse } from "@/api/posts";
-import useSwr from "swr";
+import useSWR from "swr";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { fetcher } from "@/lib-client/swr/fetcher";
+import PostForm from "./PostForm";
 
 type Props = {};
 
-const Posts = ({ }: Props) => {
+const Posts = ({}: Props) => {
   const {
     data: posts,
     error,
     isLoading,
-  } = useSwr<TGetResponse>("/api/posts", fetcher);
+    mutate,
+  } = useSWR<TGetResponse>("/api/posts", fetcher);
   if (isLoading) {
     return <div>Page is loading</div>;
   } else if (error || typeof posts === "undefined") {
@@ -21,6 +23,7 @@ const Posts = ({ }: Props) => {
 
   return (
     <div>
+      <PostForm mutate={mutate} />
       {posts &&
         posts.map((post) => (
           <Link key={nanoid()} href={`/posts/${post.id}`}>
