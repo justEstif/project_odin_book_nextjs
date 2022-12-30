@@ -11,7 +11,7 @@ const handler: NextApiHandler<TGetResponse> = async (req, res) => {
     const { currentUserId } = query as z.infer<
       typeof usersSchema["get"]["query"]
     >;
-    const data = await getNameImage(currentUserId);
+    const data = await getUsers({ currentUserId });
     res.status(200).json(data);
   } else {
     res.setHeader("Allow", ["GET"]);
@@ -32,67 +32,67 @@ export default withAuth(
   )
 );
 
-export type TGetResponse = Awaited<ReturnType<typeof getNameImage>>;
-const getNameImage = async (currentUserId: string) => {
-  return {
-    friends: await getFriendsNameImage(currentUserId),
-    sentRequests: await getSentRequestsNameImage(currentUserId),
-    receivedRequests: await getReceivedRequestsNameImage(currentUserId),
-    others: await getOthersNameImage(currentUserId),
-  };
+export type TGetResponse = Awaited<ReturnType<typeof getUsers>>;
+const getUsers = async ({ currentUserId }: { currentUserId: string }) => {
+  const xprisma = prisma.$extends({
+    name: "with-relation",
+    model: {
+      user: {
+        findWithRelation: async () => {
+          const users = await prisma.user.findMany({
+            select: {
+              id: true,
+              profile: { select: { name: true, image: true } },
+            },
+          });
+
+          return await Promise.all(
+            users.map(async (user) => ({
+              ...user,
+              relation: await getRelation({ id: user.id, currentUserId }),
+            }))
+          );
+        },
+      },
+    },
+  });
+
+  return await xprisma.user.findWithRelation();
 };
 
-const getFriendsNameImage = async (currentUserId: string) => {
-  return await prisma.user.findMany({
+const getRelation = async ({
+  id,
+  currentUserId,
+}: {
+  id: string;
+  currentUserId: string;
+}) => {
+  const user = id === currentUserId;
+  const receivedRequests = !!(await prisma.user.findFirst({
     where: {
+      id: id,
+      receivedRequests: { some: { id: currentUserId } },
+    },
+  }));
+  const sentRequest = !!(await prisma.user.findFirst({
+    where: {
+      id: id,
+      sentRequests: { some: { id: currentUserId } },
+    },
+  }));
+  const friend = !!(await prisma.user.findFirst({
+    where: {
+      id: id,
       OR: [
         { friends: { some: { id: currentUserId } } },
         { friendsOf: { some: { id: currentUserId } } },
       ],
     },
-    select: {
-      id: true,
-      profile: { select: { name: true, image: true } },
-    },
-  });
-};
+  }));
 
-const getSentRequestsNameImage = async (currentUserId: string) => {
-  return await prisma.user.findMany({
-    where: { sentRequests: { some: { id: currentUserId } } },
-    select: {
-      id: true,
-      profile: { select: { name: true, image: true } },
-    },
-  });
-};
-
-const getReceivedRequestsNameImage = async (currentUserId: string) => {
-  return await prisma.user.findMany({
-    where: { receivedRequests: { some: { id: currentUserId } } },
-    select: {
-      id: true,
-      profile: { select: { name: true, image: true } },
-    },
-  });
-};
-
-const getOthersNameImage = async (currentUserId: string) => {
-  return await prisma.user.findMany({
-    where: {
-      NOT: [
-        { friends: { some: { id: currentUserId } } },
-        { friendsOf: { some: { id: currentUserId } } },
-        { sentRequests: { some: { id: currentUserId } } },
-        { receivedRequests: { some: { id: currentUserId } } },
-        { id: currentUserId },
-      ],
-    },
-    select: {
-      id: true,
-      profile: {
-        select: { name: true, image: true },
-      },
-    },
-  });
+  if (receivedRequests) return "received-request";
+  if (sentRequest) return "sent-request";
+  if (friend) return "friend";
+  if (user) return "user";
+  return "other";
 };
