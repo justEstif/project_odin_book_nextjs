@@ -33,7 +33,6 @@ export const sentRequestsSchema = {
       .object({
         userId: z.string(),
         currentUserId: z.string(),
-        requestId: z.string(),
       })
       .refine((obj) => obj.userId === obj.currentUserId, {
         message: "Unauthorized request",
@@ -47,7 +46,6 @@ export const receivedRequestsSchema = {
       .object({
         userId: z.string(),
         currentUserId: z.string(),
-        requestId: z.string(),
       })
       .refine((obj) => obj.userId === obj.currentUserId, {
         message: "Unauthorized request",
@@ -121,6 +119,17 @@ export const friendsSchema = {
 };
 
 export const sentRequestsIdSchema = {
+  get: {
+    query: z
+      .object({
+        requestId: z.string(),
+        userId: z.string(),
+        currentUserId: z.string(),
+      })
+      .refine((obj) => obj.currentUserId === obj.userId, {
+        message: "Unauthorized request",
+      }),
+  },
   post: {
     query: z
       .object({
@@ -146,6 +155,17 @@ export const sentRequestsIdSchema = {
 };
 
 export const receivedRequestsIdSchema = {
+  get: {
+    query: z
+      .object({
+        requestId: z.string(),
+        userId: z.string(),
+        currentUserId: z.string(),
+      })
+      .refine((obj) => obj.currentUserId === obj.userId, {
+        message: "Unauthorized request",
+      }),
+  },
   post: {
     query: z
       .object({
