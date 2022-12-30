@@ -5,17 +5,26 @@ import withValidation from "@/lib-server/middleware/with-validation";
 import { friendsIdSchema } from "@/lib-server/validations/users";
 import { z } from "zod";
 
-const handler: NextApiHandler<TDeleteResponse> = async (req, res) => {
+const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
+  req,
+  res
+) => {
   const { method, query } = req;
 
-  if (method === "DELETE") {
+  if (method === "GET") {
+    const { currentUserId, friendId } = query as z.infer<
+      typeof friendsIdSchema["get"]["query"]
+    >;
+    const data = await checkFriend({ currentUserId, friendId });
+    res.status(200).json(data);
+  } else if (method === "DELETE") {
     const { currentUserId, friendId } = query as z.infer<
       typeof friendsIdSchema["delete"]["query"]
     >;
     const data = await deleteFriend({ currentUserId, friendId });
     res.status(201).json(data);
   } else {
-    res.setHeader("Allow", ["DELETE"]);
+    res.setHeader("Allow", ["GET", "DELETE"]);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -32,6 +41,25 @@ export default withAuth(
     handler
   )
 );
+
+export type TGetResponse = Awaited<ReturnType<typeof checkFriend>>;
+const checkFriend = async ({
+  currentUserId,
+  friendId,
+}: {
+  currentUserId: string;
+  friendId: string;
+}) => {
+  return !!(await prisma.user.findFirst({
+    where: {
+      id: currentUserId,
+      OR: [
+        { friends: { some: { id: friendId } } },
+        { friendsOf: { some: { id: friendId } } },
+      ],
+    },
+  }));
+};
 
 export type TDeleteResponse = Awaited<ReturnType<typeof deleteFriend>>;
 const deleteFriend = async ({
