@@ -31,6 +31,26 @@ const main = async () => {
   await prisma.account.deleteMany({});
   await prisma.verificationToken.deleteMany({});
 
+  // other users
+  await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: { create: { ...getProfileScalarData() } },
+    },
+  });
+  await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: { create: { ...getProfileScalarData() } },
+    },
+  });
+  await prisma.user.create({
+    data: {
+      ...getUserScalarData(),
+      profile: { create: { ...getProfileScalarData() } },
+    },
+  });
+
   const user1 = await prisma.user.create({
     data: {
       ...getUserScalarData(),
@@ -46,11 +66,7 @@ const main = async () => {
           ...getProfileScalarData(),
         },
       },
-      receivedRequests: {
-        connect: {
-          id: user1.id,
-        },
-      },
+      receivedRequests: { connect: { id: user1.id } },
     },
   });
 
@@ -74,9 +90,7 @@ const main = async () => {
       sentRequests: {
         connect: [{ id: user2.id }, { id: user3.id }],
       },
-      friends: {
-        connect: { id: user1.id },
-      },
+      friends: { connect: { id: user1.id } },
       posts: {
         create: [
           {
