@@ -5,16 +5,20 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import { fetcher } from "@/lib-client/swr/fetcher";
 import PostForm from "./PostForm";
+import { useState } from "react";
 
 type Props = {};
 
-const Posts = ({}: Props) => {
+const Posts = ({ }: Props) => {
+  const [pageIndex, setPageIndex] = useState(1);
+
   const {
     data: posts,
     error,
     isLoading,
     mutate,
-  } = useSWR<TGetResponse>("/api/posts", fetcher);
+  } = useSWR<TGetResponse>(`/api/posts?page=${pageIndex}`, fetcher);
+
   if (isLoading) {
     return <div>Page is loading</div>;
   } else if (error || typeof posts === "undefined") {
@@ -26,11 +30,15 @@ const Posts = ({}: Props) => {
       <PostForm mutate={mutate} />
       {posts &&
         posts.map((post) => (
-          <Link key={nanoid()} href={`/posts/${post.id}`}>
+          <div key={nanoid()}>
             <p>{post.user.profile.name}</p>
-            <h3>{post.content}</h3>
-          </Link>
+            <Link href={`/posts/${post.id}`}>
+              <h3>{post.content}</h3>
+            </Link>
+          </div>
         ))}
+      <button onClick={() => setPageIndex(pageIndex - 1)}>Previous</button>
+      <button onClick={() => setPageIndex(pageIndex + 1)}>Next</button>
     </div>
   );
 };
