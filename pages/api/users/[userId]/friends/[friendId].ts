@@ -10,21 +10,14 @@ const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
   res
 ) => {
   const { method, query } = req;
-
-  if (method === "GET") {
-    const { currentUserId, friendId } = query as z.infer<
-      typeof friendsIdSchema["get"]["query"]
-    >;
-    const data = await checkFriend({ currentUserId, friendId });
-    res.status(200).json(data);
-  } else if (method === "DELETE") {
+  if (method === "DELETE") {
     const { currentUserId, friendId } = query as z.infer<
       typeof friendsIdSchema["delete"]["query"]
     >;
     const data = await deleteFriend({ currentUserId, friendId });
     res.status(201).json(data);
   } else {
-    res.setHeader("Allow", ["GET", "DELETE"]);
+    res.setHeader("Allow", ["DELETE"]);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -32,11 +25,6 @@ const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
 export default withAuth(
   withValidation(
     [
-      {
-        validationTarget: "query",
-        requestMethod: "GET",
-        schema: friendsIdSchema["get"]["query"],
-      },
       {
         validationTarget: "query",
         requestMethod: "DELETE",

@@ -9,13 +9,7 @@ const handler: NextApiHandler<
   TGetResponse | TPostResponse | TDeleteResponse
 > = async (req, res) => {
   const { method, query } = req;
-  if (method === "GET") {
-    const { currentUserId, requestId } = query as z.infer<
-      typeof receivedRequestsIdSchema["get"]["query"]
-    >;
-    const data = await checkReceivedRequest({ currentUserId, requestId });
-    res.status(200).json(data);
-  } else if (method === "POST") {
+  if (method === "POST") {
     const { currentUserId, requestId } = query as z.infer<
       typeof receivedRequestsIdSchema["post"]["query"]
     >;
@@ -28,7 +22,7 @@ const handler: NextApiHandler<
     const data = await deleteReceivedRequest({ currentUserId, requestId });
     res.status(200).json(data);
   } else {
-    res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+    res.setHeader("Allow", ["POST", "DELETE"]);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -36,11 +30,6 @@ const handler: NextApiHandler<
 export default withAuth(
   withValidation(
     [
-      {
-        requestMethod: "GET",
-        schema: receivedRequestsIdSchema["get"]["query"],
-        validationTarget: "query",
-      },
       {
         requestMethod: "DELETE",
         schema: receivedRequestsIdSchema["delete"]["query"],
