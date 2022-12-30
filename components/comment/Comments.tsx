@@ -17,9 +17,10 @@ const Comments = ({ postId }: Props) => {
 
   return (
     <div>
-      {/* TODO Add comment form here */}
-      {/* <button onClick={comments ? reset : trigger}>Show all comments</button> */}
-      <button onClick={trigger}>Show all comments</button>
+      <button onClick={!comments ? trigger : reset}>
+        {!comments ? "Show comments" : "Hide comments"}
+      </button>
+
       {comments?.map((comment) => (
         <Comment key={nanoid()} trigger={trigger} comment={comment} />
       ))}

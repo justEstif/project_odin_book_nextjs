@@ -3,6 +3,7 @@ import CommentForm from "./CommentForm";
 import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]/comments/[commentId]";
 import { nanoid } from "nanoid";
+import { useState } from "react";
 
 type Props = {
   comment: {
@@ -31,26 +32,36 @@ const Comment = ({ comment }: Props) => {
     getComments
   );
 
-  return (
-    <div>
-      <p>
-        {comment.user.profile.name}: {comment.content}
-      </p>
+  const [replyForm, setReplyForm] = useState(true);
 
+  return (
+    <div style={{ paddingLeft: 30 }}>
       <div>
-        <button onClick={trigger}>Show More</button>
-        {commentData?.childComments.map((childComment) => (
-          <Comment key={nanoid()} trigger={trigger} comment={childComment} />
-        ))}
-        {/* <button>Reply(Show comment form)</button> */}
-        <CommentForm
-          ids={{
-            postId: comment.postId,
-            commentId: comment.id || undefined,
+        <p>
+          {comment.user.profile.name}: {comment.content}
+        </p>
+        <button
+          onClick={() => {
+            setReplyForm(!replyForm);
           }}
-          functions={{ trigger }}
-        />
+        >
+          Reply
+        </button>
+        {!replyForm && (
+          <CommentForm
+            postId={comment.postId}
+            commentId={comment.id}
+            trigger={trigger}
+          />
+        )}
+        <button onClick={!commentData ? trigger : reset}>
+          {!commentData ? "Show More" : "Show Less"}
+        </button>
       </div>
+
+      {commentData?.childComments.map((childComment) => (
+        <Comment key={nanoid()} trigger={trigger} comment={childComment} />
+      ))}
     </div>
   );
 };

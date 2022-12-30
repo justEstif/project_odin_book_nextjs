@@ -8,17 +8,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
-  functions: {
-    trigger: Function;
-  };
-  ids: {
-    commentId?: string;
-    postId: string;
-  };
+  trigger: Function;
+  commentId?: string;
+  postId: string;
 };
 
-const CommentForm = ({ ids, functions }: Props) => {
-  type TForm = typeof ids.commentId extends string
+const CommentForm = ({ trigger, commentId, postId }: Props) => {
+  type TForm = typeof commentId extends string
     ? z.infer<typeof commentsIdSchema["post"]["body"]>
     : z.infer<typeof commentsSchema["post"]["body"]>;
 
@@ -28,15 +24,15 @@ const CommentForm = ({ ids, functions }: Props) => {
     formState: { errors },
     reset,
   } = useForm<TForm>({
-    resolver: ids.commentId
+    resolver: commentId
       ? zodResolver(commentsIdSchema["post"]["body"])
       : zodResolver(commentsSchema["post"]["body"]),
   });
 
   const onSubmit: SubmitHandler<TForm> = async (data) => {
-    const url = ids.commentId
-      ? `/api/posts/${ids.postId}/comments/${ids.commentId}`
-      : `/api/posts/${ids.postId}/comments`;
+    const url = commentId
+      ? `/api/posts/${postId}/comments/${commentId}`
+      : `/api/posts/${postId}/comments`;
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -45,8 +41,8 @@ const CommentForm = ({ ids, functions }: Props) => {
       body: JSON.stringify(data),
     });
     if (res.ok) {
-      functions.trigger(); // get comments again
-      reset(); // reset form
+      trigger();
+      reset();
     } else {
       throw new Error("Error creating comment");
     }
