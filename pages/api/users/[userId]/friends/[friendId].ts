@@ -34,6 +34,11 @@ export default withAuth(
     [
       {
         validationTarget: "query",
+        requestMethod: "GET",
+        schema: friendsIdSchema["get"]["query"],
+      },
+      {
+        validationTarget: "query",
         requestMethod: "DELETE",
         schema: friendsIdSchema["delete"]["query"],
       },

@@ -5,9 +5,17 @@ import withValidation from "@/lib-server/middleware/with-validation";
 import { receivedRequestsIdSchema } from "@/lib-server/validations/users";
 import { z } from "zod";
 
-const handler: NextApiHandler<TPostResponse> = async (req, res) => {
+const handler: NextApiHandler<
+  TGetResponse | TPostResponse | TDeleteResponse
+> = async (req, res) => {
   const { method, query } = req;
-  if (method === "POST") {
+  if (method === "GET") {
+    const { currentUserId, requestId } = query as z.infer<
+      typeof receivedRequestsIdSchema["get"]["query"]
+    >;
+    const data = await checkReceivedRequest({ currentUserId, requestId });
+    res.status(200).json(data);
+  } else if (method === "POST") {
     const { currentUserId, requestId } = query as z.infer<
       typeof receivedRequestsIdSchema["post"]["query"]
     >;
@@ -20,7 +28,7 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
     const data = await deleteReceivedRequest({ currentUserId, requestId });
     res.status(200).json(data);
   } else {
-    res.setHeader("Allow", ["POST", "DELETE"]);
+    res.setHeader("Allow", ["GET", "POST", "DELETE"]);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -28,6 +36,11 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
 export default withAuth(
   withValidation(
     [
+      {
+        requestMethod: "GET",
+        schema: receivedRequestsIdSchema["get"]["query"],
+        validationTarget: "query",
+      },
       {
         requestMethod: "DELETE",
         schema: receivedRequestsIdSchema["delete"]["query"],
@@ -42,6 +55,22 @@ export default withAuth(
     handler
   )
 );
+
+export type TGetResponse = Awaited<ReturnType<typeof checkReceivedRequest>>;
+const checkReceivedRequest = async ({
+  currentUserId,
+  requestId,
+}: {
+  currentUserId: string;
+  requestId: string;
+}) => {
+  return !!(await prisma.user.findFirst({
+    where: {
+      id: currentUserId,
+      receivedRequests: { some: { id: requestId } },
+    },
+  }));
+};
 
 export type TPostResponse = Awaited<ReturnType<typeof acceptFriendRequest>>;
 const acceptFriendRequest = async ({

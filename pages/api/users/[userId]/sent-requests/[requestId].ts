@@ -9,9 +9,17 @@ import { sentRequestsIdSchema } from "@/lib-server/validations/users";
  * @todo test POST route
  * @todo test DELETE route
  */
-const handler: NextApiHandler<TPostResponse> = async (req, res) => {
+const handler: NextApiHandler<
+  TPostResponse | TGetResponse | TDeleteResponse
+> = async (req, res) => {
   const { method, query } = req;
-  if (method === "POST") {
+  if (method === "GET") {
+    const { currentUserId, requestId } = query as z.infer<
+      typeof sentRequestsIdSchema["get"]["query"]
+    >;
+    const data = await checkSentRequest({ currentUserId, requestId });
+    res.status(200).json(data);
+  } else if (method === "POST") {
     const { currentUserId, requestId } = query as z.infer<
       typeof sentRequestsIdSchema["post"]["query"]
     >;
@@ -24,7 +32,7 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
     const data = await deleteSentRequest({ currentUserId, requestId });
     res.status(200).json(data);
   } else {
-    res.setHeader("Allow", ["POST", "DELETE"]);
+    res.setHeader("Allow", ["GET", "POST", "DELETE"]);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 };
@@ -32,6 +40,11 @@ const handler: NextApiHandler<TPostResponse> = async (req, res) => {
 export default withAuth(
   withValidation(
     [
+      {
+        requestMethod: "GET",
+        schema: sentRequestsIdSchema["get"]["query"],
+        validationTarget: "query",
+      },
       {
         requestMethod: "DELETE",
         schema: sentRequestsIdSchema["delete"]["query"],
@@ -46,6 +59,22 @@ export default withAuth(
     handler
   )
 );
+
+export type TGetResponse = Awaited<ReturnType<typeof checkSentRequest>>;
+const checkSentRequest = async ({
+  currentUserId,
+  requestId,
+}: {
+  currentUserId: string;
+  requestId: string;
+}) => {
+  return !!(await prisma.user.findFirst({
+    where: {
+      id: currentUserId,
+      sentRequests: { some: { id: requestId } },
+    },
+  }));
+};
 
 export type TPostResponse = Awaited<ReturnType<typeof sendFriendRequest>>;
 const sendFriendRequest = async ({
