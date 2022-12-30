@@ -171,6 +171,17 @@ export const receivedRequestsIdSchema = {
 };
 
 export const friendsIdSchema = {
+  get: {
+    query: z
+      .object({
+        friendId: z.string(),
+        userId: z.string(),
+        currentUserId: z.string(),
+      })
+      .refine((obj) => obj.currentUserId === obj.userId, {
+        message: "Unauthorized request",
+      }),
+  },
   delete: {
     query: z
       .object({
