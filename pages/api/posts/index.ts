@@ -8,10 +8,10 @@ import { z } from "zod";
 const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const { method, query } = req;
   if (method === "GET") {
-    const { currentUserId } = query as z.infer<
+    const { currentUserId, page } = query as any as z.infer<
       typeof postsSchema["get"]["query"]
     >;
-    const data = await getPosts(currentUserId);
+    const data = await getPosts({ currentUserId, page });
     res.status(200).json(data);
   } else {
     res.setHeader("Allow", ["GET"]);
@@ -33,9 +33,17 @@ export default withAuth(
 );
 
 export type TGetResponse = Awaited<ReturnType<typeof getPosts>>;
-const getPosts = async (currentUserId: string) => {
+const getPosts = async ({
+  currentUserId,
+  page,
+}: {
+  page: number;
+  currentUserId: string;
+}) => {
   return await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
+    take: 10,
+    skip: (page - 1) * 10,
     where: {
       OR: [
         { user: { friends: { some: { id: currentUserId } } } },

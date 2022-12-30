@@ -4,6 +4,10 @@ export const postsSchema = {
   get: {
     query: z.object({
       currentUserId: z.string(),
+      page: z.preprocess(
+        (val) => parseInt(z.string().parse(val), 10),
+        z.number().positive().min(1)
+      ),
     }),
   },
   post: {
