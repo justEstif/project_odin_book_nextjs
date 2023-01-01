@@ -5,10 +5,6 @@ import withValidation from "@/lib-server/middleware/with-validation";
 import { z } from "zod";
 import { sentRequestsIdSchema } from "@/lib-server/validations/users";
 
-/**
- * @todo test POST route
- * @todo test DELETE route
- */
 const handler: NextApiHandler<
   TPostResponse | TGetResponse | TDeleteResponse
 > = async (req, res) => {
@@ -35,13 +31,13 @@ export default withAuth(
   withValidation(
     [
       {
-        requestMethod: "DELETE",
-        schema: sentRequestsIdSchema["delete"]["query"],
+        requestMethod: "POST",
+        schema: sentRequestsIdSchema["post"]["query"],
         validationTarget: "query",
       },
       {
-        requestMethod: "POST",
-        schema: sentRequestsIdSchema["post"]["query"],
+        requestMethod: "DELETE",
+        schema: sentRequestsIdSchema["delete"]["query"],
         validationTarget: "query",
       },
     ],
@@ -89,6 +85,6 @@ const deleteSentRequest = async ({
 }) => {
   return await prisma.user.update({
     where: { id: currentUserId },
-    data: { receivedRequests: { disconnect: { id: requestId } } },
+    data: { sentRequests: { disconnect: { id: requestId } } },
   });
 };
