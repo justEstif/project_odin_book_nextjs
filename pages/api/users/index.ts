@@ -48,11 +48,11 @@ const getUsers = async ({ currentUserId }: { currentUserId: string }) => {
 
           const usersWithRelation: {
             relation:
-            | "user"
-            | "received-request"
-            | "sent-request"
-            | "friend"
-            | "other";
+              | "user"
+              | "received-request"
+              | "sent-request"
+              | "friend"
+              | "none";
             profile: {
               name: string;
               image: string;
@@ -107,5 +107,5 @@ const getRelation = async ({
   if (sentRequest) return "sent-request";
   if (friend) return "friend";
   if (user) return "user";
-  return "other";
+  return "none";
 };

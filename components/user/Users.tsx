@@ -23,7 +23,7 @@ const Users = ({ }: Props) => {
   return (
     <div>
       {users.map((user) => (
-        <User key={nanoid()} user={user} />
+        <User key={nanoid()} userData={user} />
       ))}
     </div>
   );
