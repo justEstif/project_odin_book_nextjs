@@ -46,12 +46,25 @@ const getUsers = async ({ currentUserId }: { currentUserId: string }) => {
             },
           });
 
-          return await Promise.all(
+          const usersWithRelation: {
+            relation:
+            | "user"
+            | "received-request"
+            | "sent-request"
+            | "friend"
+            | "other";
+            profile: {
+              name: string;
+              image: string;
+            };
+            id: string;
+          }[] = await Promise.all(
             users.map(async (user) => ({
               ...user,
               relation: await getRelation({ id: user.id, currentUserId }),
             }))
           );
+          return usersWithRelation;
         },
       },
     },
