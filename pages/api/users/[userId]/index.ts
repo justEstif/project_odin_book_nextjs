@@ -4,6 +4,7 @@ import type { NextApiHandler } from "next";
 import { userIdSchema } from "@/lib-server/validations/users";
 import withValidation from "@/lib-server/middleware/with-validation";
 import { z } from "zod";
+import { getRelation } from "@/lib-server/utils";
 
 const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
   req,
@@ -15,7 +16,7 @@ const handler: NextApiHandler<TGetResponse | TDeleteResponse> = async (
     const { currentUserId, userId } = query as z.infer<
       typeof userIdSchema["get"]["query"]
     >;
-    const data = await getPostsProfileFriendsCount({
+    const data = await getUser({
       currentUserId,
       userId,
     });
@@ -50,46 +51,44 @@ export default withAuth(
   )
 );
 
-export type TGetResponse = Awaited<
-  ReturnType<typeof getPostsProfileFriendsCount>
->;
-const getPostsProfileFriendsCount = async ({
+export type TGetResponse = Awaited<ReturnType<typeof getUser>>;
+const getUser = async ({
   userId,
   currentUserId,
 }: {
   userId: string;
   currentUserId: string;
-}) =>
-  await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      posts: true,
-      profile: true,
-      friends: {
-        where: { id: currentUserId },
-        select: { id: true },
-      },
-      friendsOf: {
-        where: { id: currentUserId },
-        select: { id: true },
-      },
-      sentRequests: {
-        where: { id: currentUserId },
-        select: { id: true },
-      },
-      receivedRequests: {
-        where: { id: currentUserId },
-        select: { id: true },
-      },
-      _count: {
-        select: {
-          friends: true,
-          posts: true,
+}) => {
+  const xprisma = prisma.$extends({
+    name: "user-with-relation",
+    model: {
+      user: {
+        findUniqueWithRelation: async () => {
+          const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              id: true,
+              posts: true,
+              profile: true,
+              _count: {
+                select: {
+                  friends: true,
+                  posts: true,
+                },
+              },
+            },
+          });
+
+          return {
+            ...user,
+            relation: await getRelation({ id: userId, currentUserId }),
+          };
         },
       },
     },
   });
+  return xprisma.user.findUniqueWithRelation();
+};
 
 export type TDeleteResponse = Awaited<ReturnType<typeof deleteUser>>;
 const deleteUser = async ({ currentUserId }: { currentUserId: string }) => {
