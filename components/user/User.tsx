@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import useGetCurrentUserId from "@/lib-client/hooks/useGetCurrentUserId";
 import Link from "next/link";
 import useSWRMutation from "swr/mutation";
 type Props = {
@@ -14,26 +14,27 @@ type Props = {
 };
 
 const User = ({ userData }: Props) => {
-  const { data: session } = useSession();
+  const currentUserId = useGetCurrentUserId();
   const { trigger: deleteFriend } = useSWRMutation(
-    `/api/users/${session?.user.id}/friends/${userData.id}`,
+    `/api/users/${currentUserId}/friends/${userData.id}`,
     deleteRequest
   );
   const { trigger: deleteSentFriendRequest } = useSWRMutation(
-    `/api/users/${session?.user.id}/sent-requests/${userData.id}`,
+    `/api/users/${currentUserId}/sent-requests/${userData.id}`,
     deleteRequest
-  );
-  const { trigger: deleteReceivedFriendRequest } = useSWRMutation(
-    `/api/users/${session?.user.id}/received-requests/${userData.id}`,
-    deleteRequest
-  );
-  const { trigger: acceptFriendRequest } = useSWRMutation(
-    `/api/users/${session?.user.id}/received-requests/${userData.id}`,
-    postRequest
   );
   const { trigger: sendFriendRequest } = useSWRMutation(
-    `/api/users/${session?.user.id}/sent-requests/${userData.id}`,
+    `/api/users/${currentUserId}/sent-requests/${userData.id}`,
     postRequest
+  );
+
+  const { trigger: acceptFriendRequest } = useSWRMutation(
+    `/api/users/${currentUserId}/received-requests/${userData.id}`,
+    postRequest
+  );
+  const { trigger: deleteReceivedFriendRequest } = useSWRMutation(
+    `/api/users/${currentUserId}/received-requests/${userData.id}`,
+    deleteRequest
   );
 
   return (
