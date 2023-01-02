@@ -1,5 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import useSWRMutation from "swr/mutation";
 type Props = {
   userData: {
@@ -39,7 +40,7 @@ const User = ({ userData }: Props) => {
     <div>
       <p>{userData.profile.name}</p>
       <div>
-        <button>Go to user page</button>
+        <Link href={`/users/${userData.id}`}>Go to user page</Link>
       </div>
       {userData.relation === "none" && (
         <button onClick={sendFriendRequest}>send friend request</button>
