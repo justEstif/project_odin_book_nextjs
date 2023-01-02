@@ -4,6 +4,7 @@ import withAuth from "@/lib-server/middleware/with-auth";
 import withValidation from "@/lib-server/middleware/with-validation";
 import { usersSchema } from "@/lib-server/validations/users";
 import { z } from "zod";
+import { getRelation } from "@/lib-server/utils";
 
 const handler: NextApiHandler<TGetResponse> = async (req, res) => {
   const { method, query } = req;
@@ -35,10 +36,10 @@ export default withAuth(
 export type TGetResponse = Awaited<ReturnType<typeof getUsers>>;
 const getUsers = async ({ currentUserId }: { currentUserId: string }) => {
   const xprisma = prisma.$extends({
-    name: "with-relation",
+    name: "users-with-relation",
     model: {
       user: {
-        findWithRelation: async () => {
+        findAllWithRelation: async () => {
           const users = await prisma.user.findMany({
             select: {
               id: true,
@@ -46,66 +47,16 @@ const getUsers = async ({ currentUserId }: { currentUserId: string }) => {
             },
           });
 
-          const usersWithRelation: {
-            relation:
-              | "user"
-              | "received-request"
-              | "sent-request"
-              | "friend"
-              | "none";
-            profile: {
-              name: string;
-              image: string;
-            };
-            id: string;
-          }[] = await Promise.all(
+          return await Promise.all(
             users.map(async (user) => ({
               ...user,
               relation: await getRelation({ id: user.id, currentUserId }),
             }))
           );
-          return usersWithRelation;
         },
       },
     },
   });
 
-  return await xprisma.user.findWithRelation();
-};
-
-const getRelation = async ({
-  id,
-  currentUserId,
-}: {
-  id: string;
-  currentUserId: string;
-}) => {
-  const user = id === currentUserId;
-  const receivedRequests = !!(await prisma.user.findFirst({
-    where: {
-      id: id,
-      receivedRequests: { some: { id: currentUserId } },
-    },
-  }));
-  const sentRequest = !!(await prisma.user.findFirst({
-    where: {
-      id: id,
-      sentRequests: { some: { id: currentUserId } },
-    },
-  }));
-  const friend = !!(await prisma.user.findFirst({
-    where: {
-      id: id,
-      OR: [
-        { friends: { some: { id: currentUserId } } },
-        { friendsOf: { some: { id: currentUserId } } },
-      ],
-    },
-  }));
-
-  if (receivedRequests) return "received-request";
-  if (sentRequest) return "sent-request";
-  if (friend) return "friend";
-  if (user) return "user";
-  return "none";
+  return await xprisma.user.findAllWithRelation();
 };
