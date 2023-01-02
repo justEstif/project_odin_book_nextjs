@@ -1,3 +1,4 @@
+import User from "./(components)/User";
 type Props = {
   params: {
     userId: string;
@@ -5,7 +6,11 @@ type Props = {
 };
 
 const Page = ({ params: { userId } }: Props) => {
-  return <div>User: {userId}</div>;
+  return (
+    <div>
+      <User userId={userId} />
+    </div>
+  );
 };
 
 export default Page;

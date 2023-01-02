@@ -32,8 +32,8 @@ export const getRelation = async ({
     },
   }));
 
-  if (receivedRequests) return "received-request";
-  if (sentRequest) return "sent-request";
+  if (sentRequest) return "received-request";
+  if (receivedRequests) return "sent-request";
   if (friend) return "friend";
   if (user) return "user";
   return "none";
