@@ -5,9 +5,10 @@ import withValidation from "@/lib-server/middleware/with-validation";
 import { z } from "zod";
 import { sentRequestsIdSchema } from "@/lib-server/validations/users";
 
-const handler: NextApiHandler<
-  TPostResponse | TGetResponse | TDeleteResponse
-> = async (req, res) => {
+const handler: NextApiHandler<TPostResponse | TDeleteResponse> = async (
+  req,
+  res
+) => {
   const { method, query } = req;
   if (method === "POST") {
     const { currentUserId, requestId } = query as z.infer<
@@ -44,22 +45,6 @@ export default withAuth(
     handler
   )
 );
-
-export type TGetResponse = Awaited<ReturnType<typeof checkSentRequest>>;
-const checkSentRequest = async ({
-  currentUserId,
-  requestId,
-}: {
-  currentUserId: string;
-  requestId: string;
-}) => {
-  return !!(await prisma.user.findFirst({
-    where: {
-      id: currentUserId,
-      sentRequests: { some: { id: requestId } },
-    },
-  }));
-};
 
 export type TPostResponse = Awaited<ReturnType<typeof sendFriendRequest>>;
 const sendFriendRequest = async ({
