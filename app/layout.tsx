@@ -1,4 +1,4 @@
-import "style/global.css"
+import "style/global.css";
 import SessionProvider from "@/components/SessionProvider";
 
 interface IRootLayout {
