@@ -4,7 +4,7 @@ import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]";
 import { TPostResponse } from "@/api/posts/[postId]/likes";
 import { fetcher } from "@/lib-client/swr/fetcher";
-import Comments from "../comment/Comments";
+import Comments from "./Comments";
 
 type Props = {
   postId: string;

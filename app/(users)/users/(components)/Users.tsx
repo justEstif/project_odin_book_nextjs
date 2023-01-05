@@ -9,12 +9,12 @@ import UserButton from "./UserButton";
 
 type Props = {};
 
-const Users = ({}: Props) => {
+const Users = ({ }: Props) => {
   const {
     data: users,
     error,
     isLoading,
-  } = useSWR<TGetResponse>("/api/users", fetcher );
+  } = useSWR<TGetResponse>("/api/users", fetcher);
 
   if (isLoading) {
     return <div>Page is loading</div>;
@@ -27,7 +27,7 @@ const Users = ({}: Props) => {
       {users.map((user) => (
         <div
           key={nanoid()}
-          className="grid grid-cols-1 gap-2 justify-items-center items-center py-4 px-1 border-2 border-dashed"
+          className="grid grid-cols-1 gap-4 justify-items-center items-center p-4 border-2 border-black border-dashed"
         >
           <Avatar.Root className="overflow-hidden relative p-2">
             <Avatar.Image
