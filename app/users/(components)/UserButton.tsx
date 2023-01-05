@@ -1,6 +1,6 @@
 "use client";
 import useSWRMutation from "swr/mutation";
-import useGetCurrentUserId from "@/lib-client/hooks/useGetCurrentUserId";
+import useCurrentUserId from "@/lib-client/hooks/useGetCurrentUserId";
 
 type Props = {
   relation: "user" | "received-request" | "sent-request" | "friend" | "none";
@@ -8,7 +8,7 @@ type Props = {
 };
 
 const UserButton = ({ relation, id }: Props) => {
-  const currentUserId = useGetCurrentUserId();
+  const currentUserId = useCurrentUserId();
 
   const { trigger: sendRequest } = useSWRMutation(
     {

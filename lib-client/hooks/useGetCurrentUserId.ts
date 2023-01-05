@@ -1,8 +1,8 @@
 import { useSession } from "next-auth/react";
 
-const useGetCurrentUserId = () => {
+const useCurrentUserId = () => {
   const { data: session } = useSession();
   return session?.user.id || "";
 };
 
-export default useGetCurrentUserId
+export default useCurrentUserId
