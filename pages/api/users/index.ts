@@ -43,7 +43,7 @@ const getUsers = async ({ currentUserId }: { currentUserId: string }) => {
           const users = await prisma.user.findMany({
             select: {
               id: true,
-              profile: { select: { name: true, image: true } },
+              profile: { select: { name: true, image: true, bio: true } },
             },
           });
 

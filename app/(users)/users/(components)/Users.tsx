@@ -9,7 +9,7 @@ import Image from "next/image";
 
 type Props = {};
 
-const Users = ({ }: Props) => {
+const Users = ({}: Props) => {
   const {
     data: users,
     error,
