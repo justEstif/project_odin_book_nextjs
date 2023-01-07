@@ -5,8 +5,9 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     email: string;
-    image: string;
-    name: string;
+    image?: string;
+    name?: string;
+    accessToken?: string;
   }
 }
 
@@ -16,11 +17,12 @@ declare module "next-auth" {
     email: string;
   }
   interface Session {
+    accessToken?:string;
     user: {
       id: string;
       email: string;
-      image: string;
-      name: string;
+      image?: string;
+      name?: string;
     };
   }
 }
