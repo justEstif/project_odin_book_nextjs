@@ -9,7 +9,7 @@ import Image from "next/image";
 
 type Props = {};
 
-const Users = ({}: Props) => {
+const Users = ({ }: Props) => {
   const {
     data: users,
     error,
@@ -46,21 +46,7 @@ const Users = ({}: Props) => {
             <p className="text-base text-gray-700">{user.profile?.bio}</p>
           </div>
 
-          <div className="flex gap-4 py-4 px-6 bg-gray-100">
-            <button
-              type="button"
-              className="py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg border border-transparent hover:bg-blue-700 focus:outline-none"
-            >
-              Action
-            </button>
-            <button
-              type="button"
-              className="py-2 px-4 text-sm font-medium text-white bg-red-600 rounded-lg border border-transparent hover:bg-red-700 focus:outline-none"
-            >
-              Action
-            </button>
-            <UserButton relation={user.relation} id={user.id} />
-          </div>
+          <UserButton relation={user.relation} id={user.id} />
         </div>
       ))}
     </div>

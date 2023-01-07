@@ -53,27 +53,73 @@ const UserButton = ({ relation, id }: Props) => {
   return (
     <>
       {relation === "friend" && (
-        <div className="grid grid-rows-2 gap-2 justify-items-center items-center">
-          <button>Friends</button>
-          <button onClick={deleteFriend}>Remove Friend</button>
+        <div className="flex gap-4 py-4 px-6 bg-gray-100">
+          <button
+            type="button"
+            className="py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg border border-transparent hover:bg-blue-700 focus:outline-none"
+          >
+            Friends
+          </button>
+          <button
+            type="button"
+            onClick={deleteFriend}
+            className="py-2 px-4 text-sm font-medium text-white bg-red-600 rounded-lg border border-transparent hover:bg-red-700 focus:outline-none"
+          >
+            Unfriend
+          </button>
         </div>
       )}
       {relation === "none" && (
-        <div className="grid grid-rows-2 gap-2 justify-items-center items-center">
-          <button onClick={sendRequest}>Add Friend</button>
-          <button>Remove Recommendation</button>
+        <div className="flex gap-4 py-4 px-6 bg-gray-100">
+          <button
+            type="button"
+            onClick={sendRequest}
+            className="py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg border border-transparent hover:bg-blue-700 focus:outline-none"
+          >
+            Add Friend
+          </button>
+          <button
+            type="button"
+            onClick={deleteFriend}
+            className="py-2 px-4 text-sm font-medium text-white bg-red-600 rounded-lg border border-transparent hover:bg-red-700 focus:outline-none"
+          >
+            Remove Recommendation
+          </button>
         </div>
       )}
       {relation === "received-request" && (
-        <div className="grid grid-rows-2 gap-2 justify-items-center items-center">
-          <button onClick={acceptReceived}>Accept Request</button>
-          <button onClick={deleteSent}>Cancel Request</button>
+        <div className="flex gap-4 py-4 px-6 bg-gray-100">
+          <button
+            type="button"
+            onClick={acceptReceived}
+            className="py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg border border-transparent hover:bg-blue-700 focus:outline-none"
+          >
+            Accept Request
+          </button>
+          <button
+            type="button"
+            onClick={deleteSent}
+            className="py-2 px-4 text-sm font-medium text-white bg-red-600 rounded-lg border border-transparent hover:bg-red-700 focus:outline-none"
+          >
+            Cancel Request
+          </button>
         </div>
       )}
       {relation === "sent-request" && (
-        <div className="grid grid-rows-2 gap-2 justify-items-center items-center">
-          <button disabled>Pending Request</button>
-          <button onClick={deleteReceived}>Delete Request</button>
+        <div className="flex gap-4 py-4 px-6 bg-gray-100">
+          <button
+            type="button"
+            className="py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg border border-transparent hover:bg-blue-700 focus:outline-none"
+          >
+            Pending Request
+          </button>
+          <button
+            type="button"
+            onClick={deleteReceived}
+            className="py-2 px-4 text-sm font-medium text-white bg-red-600 rounded-lg border border-transparent hover:bg-red-700 focus:outline-none"
+          >
+            Delete Request
+          </button>
         </div>
       )}
     </>
