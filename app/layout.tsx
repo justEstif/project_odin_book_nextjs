@@ -1,5 +1,5 @@
 import "style/global.css";
-import SessionProvider from "./(components)/SessionProvider";
+import SessionProvider from "@/components/session-provider";
 import { cx } from "class-variance-authority";
 import { Quicksand } from "@next/font/google";
 

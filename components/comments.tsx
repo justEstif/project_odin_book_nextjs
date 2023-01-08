@@ -2,7 +2,7 @@
 import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]/comments";
 import { nanoid } from "nanoid";
-import Comment from "./Comment";
+import Comment from "./comment";
 
 type Props = {
   postId: string;

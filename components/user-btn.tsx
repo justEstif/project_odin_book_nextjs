@@ -7,7 +7,7 @@ type Props = {
   id: string;
 };
 
-const UserButton = ({ relation, id }: Props) => {
+const UserBtn = ({ relation, id }: Props) => {
   const currentUserId = useCurrentUserId();
 
   const { trigger: sendRequest } = useSWRMutation(
@@ -126,7 +126,7 @@ const UserButton = ({ relation, id }: Props) => {
   );
 };
 
-export default UserButton;
+export default UserBtn;
 
 async function request({ url, method }: { url: string; method: string }) {
   const res = await fetch(url, { method });

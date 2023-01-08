@@ -1,12 +1,14 @@
-import SignOutBtn from "../(components)/SignOutBtn";
+import SignOutBtn from "@/components/signout-btn";
+import Link from "next/link";
 
 type Props = {};
 
 const Page = ({ }: Props) => {
   return (
     <div>
-      <title>Sign out | Odin</title>
-      <SignOutBtn />
+      {/* <SignOutBtn /> */}
+      <Link href="/api/auth/signout">Sign out</Link>
+      <Link href="/api/auth/signin">Sign In</Link>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import CommentForm from "./CommentForm";
+import CommentForm from "./comment-form";
 import useSWRMutation from "swr/mutation";
 import { TGetResponse } from "@/api/posts/[postId]/comments/[commentId]";
 import { nanoid } from "nanoid";

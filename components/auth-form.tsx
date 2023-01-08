@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {};
 
-const SignInForm = ({}: Props) => {
+const AuthForm = ({}: Props) => {
   const {
     register,
     handleSubmit,
@@ -58,4 +58,4 @@ const SignInForm = ({}: Props) => {
   );
 };
 
-export default SignInForm;
+export default AuthForm;

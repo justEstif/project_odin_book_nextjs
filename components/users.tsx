@@ -4,7 +4,7 @@ import type { TGetResponse } from "@/api/users";
 import { fetcher } from "@/lib-client/swr/fetcher";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import UserButton from "./UserButton";
+import UserBtn from "./user-btn";
 import Image from "next/image";
 
 type Props = {};
@@ -46,7 +46,7 @@ const Users = ({ }: Props) => {
             <p className="text-base text-gray-700">{user.profile?.bio}</p>
           </div>
 
-          <UserButton relation={user.relation} id={user.id} />
+          <UserBtn relation={user.relation} id={user.id} />
         </div>
       ))}
     </div>

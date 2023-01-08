@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { fetcher } from "@/lib-client/swr/fetcher";
-import PostForm from "./PostForm";
+import PostForm from "./post-form";
 import { useState } from "react";
 
 type Props = {};
