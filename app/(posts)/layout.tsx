@@ -1,3 +1,5 @@
+import NavBar from "@/components/nav-bar";
+
 type TPostsLayout = {
   children: React.ReactNode;
 };
@@ -5,8 +7,7 @@ type TPostsLayout = {
 const PostsLayout = ({ children }: TPostsLayout) => {
   return (
     <div className="flex flex-col min-h-screen">
-      <header>Header</header>
-
+      <NavBar />
       <div className="flex flex-col flex-1 sm:flex-row">
         <nav className="bg-purple-200 sm:w-32">Sidebar</nav>
         <main className="flex-1 bg-indigo-100">{children}</main>
