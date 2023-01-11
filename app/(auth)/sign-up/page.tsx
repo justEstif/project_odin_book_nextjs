@@ -5,18 +5,22 @@ type Props = {};
 
 const Page = ({}: Props) => {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>Welcome back</h1>
-      <p>Enter your email to sign-up</p>
+    <>
+      <div className="mb-4 text-center">
+        <h1 className="font-sans text-2xl font-semibold text-primary-800">
+          Welcome
+        </h1>
+        <p className="text-lg text-secondary-600">Enter your email</p>
+      </div>
 
       <AuthForm />
-      <p>
-        Already a member?{" "}
-        <Link href="/sign-in" className="underline hover:text-brand">
-          Sign in
-        </Link>
-      </p>
-    </div>
+      <Link
+        href="/sign-in"
+        className="block text-center underline underline-offset-4 text-primary-800 hover:text-primary-500"
+      >
+        Already a member? Sign in
+      </Link>
+    </>
   );
 };
 

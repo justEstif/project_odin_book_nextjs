@@ -1,22 +1,26 @@
 import Link from "next/link";
-import AuthForm from "@/components/auth-form"
+import AuthForm from "@/components/auth-form";
 
 type Props = {};
 
 const Page = ({}: Props) => {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>Welcome back</h1>
-      <p>Enter your email to sign-in</p>
+    <>
+      <div className="mb-4 text-center">
+        <h1 className="font-sans text-2xl font-semibold text-primary-800">
+          Welcome back
+        </h1>
+        <p className="text-lg text-secondary-600">Enter your email</p>
+      </div>
 
       <AuthForm />
-      <p>
-        Not a member?{" "}
-        <Link href="/sign-up" className="underline hover:text-brand">
-          Sign up
-        </Link>
-      </p>
-    </div>
+      <Link
+        href="/sign-up"
+        className="block text-center underline underline-offset-4 text-primary-800 hover:text-primary-500"
+      >
+        Not a member? Sign up
+      </Link>
+    </>
   );
 };
 
