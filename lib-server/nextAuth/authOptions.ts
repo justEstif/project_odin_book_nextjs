@@ -9,7 +9,6 @@ const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
     newUser: "/new-user", // redirect new user here
-    signOut: "/sign-out",
     signIn: "/sign-in", // custom sign in page
   },
   session: {

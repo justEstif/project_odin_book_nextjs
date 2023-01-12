@@ -1,8 +1,13 @@
-'use client'
+"use client";
+import SignOutBtn from "@/components/signout-btn";
 type Props = {};
 
-const NavBar = ({}: Props) => {
-  return <header>NavBar with dropdown</header>;
+const NavBar = ({ }: Props) => {
+  return (
+    <header>
+      <SignOutBtn />
+    </header>
+  );
 };
 
 export default NavBar;
