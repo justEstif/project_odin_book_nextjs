@@ -1,4 +1,4 @@
-# auth
+# Auth
 
 - Authentication is handled by NextAuth
 - Providers used:

@@ -1,8 +1,14 @@
 # Project: Odin Book
 
+## Hosting
+
+- [Live link]()
+
+## Notes
+
 - [TOP](./top.md)
-- [Articles](./articles.md)
-- [Models](./db.md)
+- [Client](./client/index.md)
+- [Server](./server/index.md)
 
 ## Using
 

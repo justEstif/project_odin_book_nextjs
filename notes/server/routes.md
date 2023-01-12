@@ -1,4 +1,27 @@
-## Posts:
+# Routes
+
+## users
+
+| Type       | Route                            | Function                                               |
+| ---------- | -------------------------------- | ------------------------------------------------------ |
+| [X] GET    | /users                           | get all users                                          |
+| [X] GET    | /users/:id                       | get user using user id                                 |
+| [X] GET    | /users/:id/posts                 | get user posts using user id                           |
+| [X] GET    | /users/:id/profile               | get user profile using user id                         |
+| [X] GET    | /users/:id/liked-posts           | get user liked posts using user id                     |
+| [X] GET    | /users/:id/friends               | get user friends using user id                         |
+| [X] GET    | /users/:id/sent-requests         | get user received-requests                             |
+| [X] GET    | /users/:id/received-requests     | get user sent-requests                                 |
+| [ﭧ] POST   | /users/:id/posts                 | create a post, only if user id matches session user id |
+| [ﭧ] POST   | /users/:id/sent-requests/:id     | send a friend request                                  |
+| [ﭧ] POST   | /users/:id/received-requests/:id | accept a friend request                                |
+| [ﭧ] PUT    | /users/:id/profile               | update profile                                         |
+| [ﭧ] DELETE | /users/:id                       | delete a user                                          |
+| [ﭧ] DELETE | /users/:id/friends/:id           | delete a friend                                        |
+| [ﭧ] DELETE | /users/:id/sent-requests/:id     | delete a sent friend request                           |
+| [ﭧ] DELETE | /users/:id/received-requests/:id | delete a received friend request                       |
+
+## posts
 
 | HTTP       | Route                            | Description                                          |
 | ---------- | -------------------------------- | ---------------------------------------------------- |
@@ -21,27 +44,3 @@
 | [ﭧ] DELETE | /posts/:id                       | delete a post, only if the post if the current users |
 | [ ] DELETE | /posts/:id/comments/:id          | delete a comment                                     |
 | [X] POST   | /posts                           | create a post                                        |
-
-## GET `/posts`
-
-- Response:
-  - posts of friends of current user
-  - user:
-    - id
-    - profile
-      - name
-      - image
-
-## POST `/posts/:id`
-
-- Response:
-
-  - the created post
-
-  - creating a child comment vs updating a comment
-
-  - parent comment id and post id
-
-- I need to paginate the posts
-- get the first 10 posts
-- then get the 11 - 20 posts ...
