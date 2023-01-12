@@ -1,16 +1,15 @@
-interface AuthLayoutProps {
+import styles from "./layout.module.css";
+type TProps = {
   children: React.ReactNode;
-}
+};
 
-const AuthLayout = ({ children }: AuthLayoutProps) => {
+const Layout = ({ children }: TProps) => {
   return (
-    <div className="flex flex-col min-h-screen leading-7">
-      <main className="flex flex-col flex-1 justify-center items-center">
-        {children}
-      </main>
-      <footer className="flex justify-end p-5">footer</footer>
+    <div className={styles.div}>
+      <main className={styles.main}>{children}</main>
+      <footer className={styles.footer}>Demo</footer>
     </div>
   );
 };
 
-export default AuthLayout;
+export default Layout;

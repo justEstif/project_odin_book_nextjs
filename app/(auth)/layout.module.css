@@ -1,0 +1,11 @@
+.div {
+  @apply flex flex-col min-h-screen;
+}
+
+.main {
+  @apply container grid flex-1 grid-cols-1 justify-center items-center mx-auto max-w-md;
+}
+
+.footer {
+  @apply flex justify-end p-5;
+}
