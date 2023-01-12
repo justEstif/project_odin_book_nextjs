@@ -18,7 +18,7 @@ const RootLayout = ({ children }: IRootLayout) => {
       lang="en"
       className={cx(
         `${quicksand.variable}`,
-        "font-sans bg-secondary-50 text-secondary-900"
+        "bg-secondary-50 text-secondary-900"
       )}
     >
       <head />
