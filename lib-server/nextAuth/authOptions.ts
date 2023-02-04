@@ -8,7 +8,6 @@ import PrismaAdapter from "@/lib-server/nextAuth/adapters/prisma";
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   pages: {
-    newUser: "/new-user", // redirect new user here
     signIn: "/sign-in", // custom sign in page
   },
   session: {
@@ -32,7 +31,7 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, isNewUser }) => {
       const dbUser = await prisma.user.findUnique({
         where: {
           id: token.id || "",
@@ -41,6 +40,10 @@ const authOptions: NextAuthOptions = {
           profile: true,
         },
       });
+
+      if (!!isNewUser) {
+        token.isNewUser = isNewUser;
+      }
 
       if (!dbUser && user) {
         token.id = user.id;
@@ -64,6 +67,7 @@ const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.image;
         session.user.name = token.name;
+        session.isNewUser = token.isNewUser;
       } else {
         session.user.id = user.id;
         session.user.email = user.email;

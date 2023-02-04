@@ -8,6 +8,7 @@ declare module "next-auth/jwt" {
     image?: string;
     name?: string;
     accessToken?: string;
+    isNewUser?: boolean;
   }
 }
 
@@ -17,7 +18,8 @@ declare module "next-auth" {
     email: string;
   }
   interface Session {
-    accessToken?:string;
+    accessToken?: string;
+    isNewUser?: boolean;
     user: {
       id: string;
       email: string;

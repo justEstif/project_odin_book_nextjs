@@ -21,7 +21,7 @@ const getPostAndCommentScalarData = () => ({
   content: faker.hacker.phrase(),
 });
 
-const main = async () => {
+const clearDb = async () => {
   await prisma.user.deleteMany({});
   await prisma.post.deleteMany({});
   await prisma.post.deleteMany({});
@@ -30,6 +30,10 @@ const main = async () => {
   await prisma.session.deleteMany({});
   await prisma.account.deleteMany({});
   await prisma.verificationToken.deleteMany({});
+};
+
+const main = async () => {
+  await clearDb();
 
   // other users
   await prisma.user.create({
