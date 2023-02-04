@@ -3,9 +3,8 @@ import { AuthSchema, TAuthSchema } from "@/lib-client/validation/auth";
 import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import { CircleNotch } from "phosphor-react";
-import styles from "./authForm.module.css";
+import styles from "./styles.module.css";
 
 type Props = {
   intent: "sign-in" | "sign-up";
@@ -36,17 +35,16 @@ const AuthForm = ({ intent }: Props) => {
     } else {
       setError("email", {
         type: "success",
-        message: `We sent you a ${
-          intent === "sign-in" ? "sign in " : "sign up "
-        }link. Be sure to check your spam too.`,
+        message: `We sent you a ${intent === "sign-in" ? "sign in " : "sign up "
+          }link. Be sure to check your spam too.`,
       });
     }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="email" className="sr-only">
+      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        <label htmlFor="email" className={styles.label}>
           Email address
         </label>
         <input
@@ -61,19 +59,29 @@ const AuthForm = ({ intent }: Props) => {
           <span className={styles.successMessage}>{errors.email?.message}</span>
         )}
 
-        <Button type="submit" disabled={isSubmitting ? true : false}>
+        <button
+          className={styles.primaryBtn}
+          type="submit"
+          disabled={isSubmitting ? true : false}
+        >
           <span>
             {intent === "sign-in" ? "Sign in " : "Sign up "}with Email
           </span>
           {isSubmitting && <CircleNotch className={styles.submissionIcon} />}
-        </Button>
+        </button>
       </form>
 
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>or</legend>
-        <Button intent={"secondary"} onClick={async () => signIn("facebook")}>
-          {intent === "sign-in" ? "Sign in " : "Sign up "}with Facebook
-        </Button>
+        <button
+          className={styles.secondaryBtn}
+          onClick={async () => signIn("facebook")}
+          disabled={isSubmitting ? true : false}
+        >
+          <span>
+            {intent === "sign-in" ? "Sign in " : "Sign up "}with Facebook
+          </span>
+        </button>
       </fieldset>
     </>
   );

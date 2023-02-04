@@ -22,7 +22,7 @@ const RootLayout = ({ children }: IRootLayout) => {
       )}
     >
       <head />
-      <body>
+      <body className="container mx-auto max-w-4xl">
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
