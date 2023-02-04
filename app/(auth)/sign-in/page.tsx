@@ -1,18 +1,22 @@
 import Link from "next/link";
 import AuthForm from "@/components/auth-form";
-import styles from "../page.module.css";
 
 type Props = {};
 
-const Page = ({}: Props) => {
+const Page = ({ }: Props) => {
   return (
-    <>
-      <h2 className={styles.h2}>Welcome back</h2>
+    <main className="container flex flex-1 justify-center items-center mx-auto max-w-md">
+      <h2 className="mb-4 text-3xl font-bold text-center text-primary-800">
+        Welcome back
+      </h2>
       <AuthForm intent="sign-in" />
-      <Link href="/sign-up" className={styles.link}>
+      <Link
+        href="/sign-up"
+        className="block text-center underline underline-offset-4 text-primary-800 hover:text-primary-500"
+      >
         Not a member? Sign up
       </Link>
-    </>
+    </main>
   );
 };
 

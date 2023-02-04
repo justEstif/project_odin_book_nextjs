@@ -1,0 +1,56 @@
+.message {
+  @apply flex items-center mb-2 text-sm font-medium tracking-wide;
+}
+
+.errorMessage {
+  composes: message;
+  @apply text-danger-500;
+}
+
+.successMessage {
+  composes: message;
+  @apply text-info-500;
+}
+
+.form {
+  @apply w-full;
+}
+
+.fieldset {
+  @apply w-full border-t border-secondary-300;
+}
+
+.label {
+  @apply sr-only;
+}
+
+.legend {
+  @apply px-4 mx-auto mb-4 text-xs uppercase text-secondary-500;
+}
+
+.input {
+  @apply py-1 px-2 mb-4 w-full rounded-lg border-2 focus:outline-none border-primary-400 text-lg focus:border-primary-800;
+}
+
+.submissionIcon {
+  @apply inline-block w-6 h-6 animate-spin;
+}
+
+.btn {
+  @apply py-2 w-full mb-4 rounded-lg transition-all;
+}
+
+.primaryBtn {
+  composes: btn;
+  @apply bg-primary-800 font-semibold text-secondary-50 hover:bg-primary-600;
+}
+
+.secondaryBtn {
+  composes: btn;
+  @apply border-2 font-semibold border-primary-300 text-primary-800 hover:bg-primary-300 hover:text-primary-600;
+}
+
+.tertiaryBtn {
+  composes: btn;
+  @apply underline underline-offset-4 text-primary-800 hover:text-primary-500;
+}
